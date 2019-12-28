@@ -1,4 +1,4 @@
-Unit Tests
+# 第 9 章 Unit Tests
 Image
 
 Image
@@ -8,9 +8,9 @@ Image
 Our profession has come a long way in the last ten years. In 1997 no one had heard of Test Driven Development. For the vast majority of us, unit tests were short bits of throw-away code that we wrote to make sure our programs “worked.” We would painstakingly write our classes and methods, and then we would concoct some ad hoc code to test them. Typically this would involve some kind of simple driver program that would allow us to manually interact with the program we had written.
 
 I remember writing a C++ program for an embedded real-time system back in the mid-90s. The program was a simple timer with the following signature:
-
+```cpp
    void Timer::ScheduleCommand(Command* theCommand, int milliseconds)
-
+```
 The idea was simple; the execute method of the Command would be executed in a new thread after the specified number of milliseconds. The problem was, how to test it.
 
 I cobbled together a simple driver program that listened to the keyboard. Every time a character was typed, it would schedule a command that would type the same character five seconds later. Then I tapped out a rhythmic melody on the keyboard and waited for that melody to replay on the screen five seconds later.
@@ -75,7 +75,7 @@ Consider the code from FitNesse in Listing 9-1. These three tests are difficult 
 
 
 Listing 9-1 SerializedPageResponderTest.java
-
+```java
    public void testGetPageHieratchyAsXml() throws Exception
    {
 
@@ -140,7 +140,7 @@ Listing 9-1 SerializedPageResponderTest.java
      assertSubString(“test page”, xml);
      assertSubString(“<Test”, xml);
    }
-
+```
 For example, look at the PathParser calls. They transform strings into PagePath instances used by the crawlers. This transformation is completely irrelevant to the test at hand and serves only to obfuscate the intent. The details surrounding the creation of the responder and the gathering and casting of the response are also just noise. Then there’s the ham-handed way that the request URL is built from a resource and an argument. (I helped write this code, so I feel free to roundly criticize it.)
 
 In the end, this code was not designed to be read. The poor reader is inundated with a swarm of details that must be understood before the tests make any real sense.
@@ -149,7 +149,7 @@ Now consider the improved tests in Listing 9-2. These tests do the exact same th
 
 
 Listing 9-2 SerializedPageResponderTest.java (refactored)
-
+```java
    public void testGetPageHierarchyAsXml() throws Exception {
      makePages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
  
@@ -185,7 +185,7 @@ Listing 9-2 SerializedPageResponderTest.java (refactored)
      assertResponseIsXML();
      assertResponseContains(“test page”, “<Test”);
    }
-
+```
 The BUILD-OPERATE-CHECK2 pattern is made obvious by the structure of these tests. Each of the tests is clearly split into three parts. The first part builds up the test data, the second part operates on that test data, and the third part checks that the operation yielded the expected results.
 
 2. http://fitnesse.org/FitNesse.AcceptanceTestPatterns
@@ -204,7 +204,7 @@ Consider the test in Listing 9-3. I wrote this test as part of an environment co
 
 
 Listing 9-3 EnvironmentControllerTest.java
-
+```java
    @Test
      public void turnOnLoTempAlarmAtThreashold() throws Exception {
        hw.setTemp(WAY_TOO_COLD);
@@ -215,7 +215,7 @@ Listing 9-3 EnvironmentControllerTest.java
        assertFalse(hw.hiTempAlarm());
        assertTrue(hw.loTempAlarm());
      }
-
+```
 There are, of course, lots of details here. For example, what is that tic function all about? In fact, I’d rather you not worry about that while reading this test. I’d rather you just worry about whether you agree that the end state of the system is consistent with the temperature being “way too cold.”
 
 Notice, as you read the test, that your eye needs to bounce back and forth between the name of the state being checked, and the sense of the state being checked. You see heaterState, and then your eyes glissade left to assertTrue. You see coolerState and your eyes must track left to assertFalse. This is tedious and unreliable. It makes the test hard to read.
@@ -224,13 +224,13 @@ I improved the reading of this test greatly by transforming it into Listing 9-4.
 
 
 Listing 9-4 EnvironmentControllerTest.java (refactored)
-
+```java
    @Test
      public void turnOnLoTempAlarmAtThreshold() throws Exception {
        wayTooCold();
        assertEquals(“HBchL”, hw.getState());
      }
-
+```
 Of course I hid the detail of the tic function by creating a wayTooCold function. But the thing to note is the strange string in the assertEquals. Upper case means “on,” lower case means “off,” and the letters are always in the following order: {heater, blower, cooler, hi-temp-alarm, lo-temp-alarm}.
 
 Even though this is close to a violation of the rule about mental mapping,3 it seems appropriate in this case. Notice, once you know the meaning, your eyes glide across that string and you can quickly interpret the results. Reading the test becomes almost a pleasure. Just take a look at Listing 9-5 and see how easy it is to understand these tests.
@@ -239,7 +239,7 @@ Even though this is close to a violation of the rule about mental mapping,3 it s
 
 
 Listing 9-5 EnvironmentControllerTest.java (bigger selection)
-
+```java
    @Test
    public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
      tooHot();
@@ -262,12 +262,12 @@ Listing 9-5 EnvironmentControllerTest.java (bigger selection)
      wayTooCold();
      assertEquals(“HBchL”, hw.getState());
    }
-
+```
 The getState function is shown in Listing 9-6. Notice that this is not very efficient code. To make it efficient, I probably should have used a StringBuffer.
 
 
 Listing 9-6 MockControlHardware.java
-
+```java
    public String getState() {
      String state = ””;
      state += heater ? “H” : “h”;
@@ -277,7 +277,7 @@ Listing 9-6 MockControlHardware.java
      state += loTempAlarm ? “L” : “l”;
      return state;
    }
-
+```
 StringBuffers are a bit ugly. Even in production code I will avoid them if the cost is small; and you could argue that the cost of the code in Listing 9-6 is very small. However, this application is clearly an embedded real-time system, and it is likely that computer and memory resources are very constrained. The test environment, however, is not likely to be constrained at all.
 
 That is the nature of the dual standard. There are things that you might never do in a production environment that are perfectly fine in a test environment. Usually they involve issues of memory or CPU efficiency. But they never involve issues of cleanliness.
@@ -291,7 +291,7 @@ But what about Listing 9-2? It seems unreasonable that we could somehow easily m
 
 
 Listing 9-7 SerializedPageResponderTest.java (Single Assert)
-
+```java
    public void testGetPageHierarchyAsXml() throws Exception {
        givenPages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
  
@@ -308,7 +308,7 @@ Listing 9-7 SerializedPageResponderTest.java (Single Assert)
          “<name>PageOne</name>”, “<name>PageTwo</name>”, “<name>ChildOne</name>”
        );
    }
-
+```
 Notice that I have changed the names of the functions to use the common given-when-then5 convention. This makes the tests even easier to read. Unfortunately, splitting the tests as shown results in a lot of duplicate code.
 
 5. [RSpec].
@@ -326,7 +326,7 @@ Perhaps a better rule is that we want to test a single concept in each test func
 
 
 Listing 9-8
-
+```java
    /**
    * Miscellaneous tests for the addMonths() method.
    */
@@ -349,7 +349,7 @@ Listing 9-8
        assertEquals(2004, d4.getYYYY());
  
    }
-
+```
 The three test functions probably ought to be like this:
 
 • Given the last day of a month with 31 days (like May):

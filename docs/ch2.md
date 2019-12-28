@@ -1,4 +1,4 @@
-Meaningful Names
+# 第 2 章 Meaningful Names
 by Tim Ottinger
 Image
 
@@ -9,18 +9,18 @@ USE INTENTION-REVEALING NAMES
 It is easy to say that names should reveal intent. What we want to impress upon you is that we are serious about this. Choosing good names takes time but saves more than it takes. So take care with your names and change them when you find better ones. Everyone who reads your code (including you) will be happier if you do.
 
 The name of a variable, function, or class, should answer all the big questions. It should tell you why it exists, what it does, and how it is used. If a name requires a comment, then the name does not reveal its intent.
-
+```java
    int d; // elapsed time in days
 
 The name d reveals nothing. It does not evoke a sense of elapsed time, nor of days. We should choose a name that specifies what is being measured and the unit of that measurement:
-
+```java
    int elapsedTimeInDays;
    int daysSinceCreation;
    int daysSinceModification;
    int fileAgeInDays;
-
+```
 Choosing names that reveal intent can make it much easier to understand and change code. What is the purpose of this code?
-
+```java
    public List<int[]> getThem() {
      List<int[]> list1 = new ArrayList<int[]>();
      for (int[] x : theList)
@@ -28,7 +28,7 @@ Choosing names that reveal intent can make it much easier to understand and chan
          list1.add(x);
      return list1;
    }
-
+```
 Why is it hard to tell what this code is doing? There are no complex expressions. Spacing and indentation are reasonable. There are only three variables and two constants mentioned. There aren’t even any fancy classes or polymorphic methods, just a list of arrays (or so it seems).
 
 The problem isn’t the simplicity of the code but the implicity of the code (to coin a phrase): the degree to which the context is not explicit in the code itself. The code implicitly requires that we know the answers to questions such as:
@@ -44,7 +44,7 @@ The problem isn’t the simplicity of the code but the implicity of the code (to
 The answers to these questions are not present in the code sample, but they could have been. Say that we’re working in a mine sweeper game. We find that the board is a list of cells called theList. Let’s rename that to gameBoard.
 
 Each cell on the board is represented by a simple array. We further find that the zeroth subscript is the location of a status value and that a status value of 4 means “flagged.” Just by giving these concepts names we can improve the code considerably:
-
+```java
    public List<int[]> getFlaggedCells() {
      List<int[]> flaggedCells = new ArrayList<int[]>();
      for (int[] cell : gameBoard)
@@ -52,11 +52,11 @@ Each cell on the board is represented by a simple array. We further find that th
         flaggedCells.add(cell);
       return flaggedCells;
    }
-
+```
 Notice that the simplicity of the code has not changed. It still has exactly the same number of operators and constants, with exactly the same number of nesting levels. But the code has become much more explicit.
 
 We can go further and write a simple class for cells instead of using an array of ints. It can include an intention-revealing function (call it isFlagged) to hide the magic numbers. It results in a new version of the function:
-
+```java
    public List<Cell> getFlaggedCells() {
      List<Cell> flaggedCells = new ArrayList<Cell>();
      for (Cell cell : gameBoard)
@@ -64,7 +64,7 @@ We can go further and write a simple class for cells instead of using an array o
          flaggedCells.add(cell);
      return flaggedCells;
    }
-
+```
 With these simple name changes, it’s not difficult to understand what’s going on. This is the power of choosing good names.
 
 AVOID DISINFORMATION
@@ -79,13 +79,13 @@ Beware of using names which vary in small ways. How long does it take to spot th
 Spelling similar concepts similarly is information. Using inconsistent spellings is disinformation. With modern Java environments we enjoy automatic code completion. We write a few characters of a name and press some hotkey combination (if that) and are rewarded with a list of possible completions for that name. It is very helpful if names for very similar things sort together alphabetically and if the differences are very obvious, because the developer is likely to pick an object by name without seeing your copious comments or even the list of methods supplied by that class.
 
 A truly awful example of disinformative names would be the use of lower-case L or uppercase O as variable names, especially in combination. The problem, of course, is that they look almost entirely like the constants one and zero, respectively.
-
+```java
    int a = l;
    if ( O == l )
      a = O1;
    else
      l = 01;
-
+```
 The reader may think this a contrivance, but we have examined code where such things were abundant. In one case the author of the code suggested using a different font so that the differences were more obvious, a solution that would have to be passed down to all future developers as oral tradition or in a written document. The problem is conquered with finality and without creating new work products by a simple renaming.
 
 MAKE MEANINGFUL DISTINCTIONS
@@ -98,13 +98,13 @@ Programmers create problems for themselves when they write code solely to satisf
 It is not sufficient to add number series or noise words, even though the compiler is satisfied. If names must be different, then they should also mean something different.
 
 Number-series naming (a1, a2, .. aN) is the opposite of intentional naming. Such names are not disinformative—they are noninformative; they provide no clue to the author’s intention. Consider:
-
+```java
    public static void copyChars(char a1[], char a2[]) {
      for (int i = 0; i < a1.length; i++) {
        a2[i] = a1[i];
      }
    }
-
+```
 This function reads much better when source and destination are used for the argument names.
 
 Noise words are another meaningless distinction. Imagine that you have a Product class. If you have another called ProductInfo or ProductData, you have made the names different without making them mean anything different. Info and Data are indistinct noise words like a, an, and the.
@@ -116,11 +116,11 @@ Note that there is nothing wrong with using prefix conventions like a and the so
 Noise words are redundant. The word variable should never appear in a variable name. The word table should never appear in a table name. How is NameString better than Name? Would a Name ever be a floating point number? If so, it breaks an earlier rule about disinformation. Imagine finding one class named Customer and another named CustomerObject. What should you understand as the distinction? Which one will represent the best path to a customer’s payment history?
 
 There is an application we know of where this is illustrated. we’ve changed the names to protect the guilty, but here’s the exact form of the error:
-
+```java
    getActiveAccount();
    getActiveAccounts();
    getActiveAccountInfo();
-
+```
 How are the programmers in this project supposed to know which of these functions to call?
 
 In the absence of specific conventions, the variable moneyAmount is indistinguishable from money, customerInfo is indistinguishable from customer, accountData is indistinguishable from account, and theMessage is indistinguishable from message. Distinguish names in such a way that the reader knows what the differences offer.
@@ -131,23 +131,23 @@ Humans are good at words. A significant part of our brains is dedicated to the c
 If you can’t pronounce it, you can’t discuss it without sounding like an idiot. “Well, over here on the bee cee arr three cee enn tee we have a pee ess zee kyew int, see?” This matters because programming is a social activity.
 
 A company I know has genymdhms (generation date, year, month, day, hour, minute, and second) so they walked around saying “gen why emm dee aich emm ess”. I have an annoying habit of pronouncing everything as written, so I started saying “gen-yah-muddahims.” It later was being called this by a host of designers and analysts, and we still sounded silly. But we were in on the joke, so it was fun. Fun or not, we were tolerating poor naming. New developers had to have the variables explained to them, and then they spoke about it in silly made-up words instead of using proper English terms. Compare
-
+```java
    class DtaRcrd102 {
      private Date genymdhms;
      private Date modymdhms;
      private final String pszqint = ”102”;
       /* … */
    };
-
+```
 to
-
+```java
    class Customer {
      private Date generationTimestamp;
      private Date modificationTimestamp;;
      private final String recordId = ”102”;
      /* … */
    };
-
+```
 Intelligent conversation is now possible: “Hey, Mikey, take a look at this record! The generation timestamp is set to tomorrow’s date! How can that be?”
 
 USE SEARCHABLE NAMES
@@ -158,13 +158,13 @@ One might easily grep for MAX_CLASSES_PER_STUDENT, but the number 7 could be mor
 Likewise, the name e is a poor choice for any variable for which a programmer might need to search. It is the most common letter in the English language and likely to show up in every passage of text in every program. In this regard, longer names trump shorter names, and any searchable name trumps a constant in code.
 
 My personal preference is that single-letter names can ONLY be used as local variables inside short methods. The length of a name should correspond to the size of its scope [N5]. If a variable or constant might be seen or used in multiple places in a body of code, it is imperative to give it a search-friendly name. Once again compare
-
+```java
    for (int j=0; j<34; j++) {
      s += (t[j]*4)/5;
    }
-
+```
 to
-
+```java
    int realDaysPerIdealDay = 4;
    const int WORK_DAYS_PER_WEEK = 5;
    int sum = 0;
@@ -173,7 +173,7 @@ to
      int realTaskWeeks = (realdays / WORK_DAYS_PER_WEEK);
      sum += realTaskWeeks;
    }
-
+```
 Note that sum, above, is not a particularly useful name but at least is searchable. The intentionally named code makes for a longer function, but consider how much easier it will be to find WORK_DAYS_PER_WEEK than to find all the places where 5 was used and filter the list down to just the instances with the intended meaning.
 
 AVOID ENCODINGS
@@ -187,13 +187,13 @@ HN was considered to be pretty important back in the Windows C API, when everyth
 In modern languages we have much richer type systems, and the compilers remember and enforce the types. What’s more, there is a trend toward smaller classes and shorter functions so that people can usually see the point of declaration of each variable they’re using.
 
 Java programmers don’t need type encoding. Objects are strongly typed, and editing environments have advanced such that they detect a type error long before you can run a compile! So nowadays HN and other forms of type encoding are simply impediments. They make it harder to change the name or type of a variable, function, or class. They make it harder to read the code. And they create the possibility that the encoding system will mislead the reader.
-
+```java
    PhoneNumber phoneString;
    // name not changed when type changed!
-
+```
 Member Prefixes
 You also don’t need to prefix member variables with m_ anymore. Your classes and functions should be small enough that you don’t need them. And you should be using an editing environment that highlights or colorizes members to make them distinct.
-
+```java
    public class Part {
      private String m_dsc; // The textual description
      void setName(String name) {
@@ -207,7 +207,7 @@ You also don’t need to prefix member variables with m_ anymore. Your classes a
        this.description = description;
      }
    }
-
+```
 Besides, people quickly learn to ignore the prefix (or suffix) to see the meaningful part of the name. The more we read the code, the less we see the prefixes. Eventually the prefixes become unseen clutter and a marker of older code.
 
 Interfaces and Implementations
@@ -229,19 +229,19 @@ METHOD NAMES
 Methods should have verb or verb phrase names like postPayment, deletePage, or save. Accessors, mutators, and predicates should be named for their value and prefixed with get, set, and is according to the javabean standard.4
 
 4. http://java.sun.com/products/javabeans/docs/spec.html
-
+```java
    string name = employee.getName();
    customer.setName(”mike”);
    if (paycheck.isPosted())…
-
+```
 When constructors are overloaded, use static factory methods with names that describe the arguments. For example,
-
+```java
    Complex fulcrumPoint = Complex.FromRealNumber(23.0);
-
+```
 is generally better than
-
+```java
    Complex fulcrumPoint = new Complex(23.0);
-
+```
 Consider enforcing their use by making the corresponding constructors private.
 
 DON’T BE CUTE
@@ -292,7 +292,7 @@ Consider the method in Listing 2-1. Do the variables need a more meaningful cont
 
 
 Listing 2-1 Variables with unclear context.
-
+```java
    private void printGuessStatistics(char candidate, int count) {   String number;
        String verb;
        String pluralModifier;
@@ -314,12 +314,12 @@ Listing 2-1 Variables with unclear context.
        );
        print(guessMessage);
      }
-
+```
 The function is a bit too long and the variables are used throughout. To split the function into smaller pieces we need to create a GuessStatisticsMessage class and make the three variables fields of this class. This provides a clear context for the three variables. They are definitively part of the GuessStatisticsMessage. The improvement of context also allows the algorithm to be made much cleaner by breaking it into many smaller functions. (See Listing 2-2.)
 
 
 Listing 2-2 Variables have a context.
-
+```java
    public class GuessStatisticsMessage {
      private String number;
      private String verb;
@@ -360,7 +360,7 @@ Listing 2-2 Variables have a context.
        pluralModifier = "s";
      }
    }
-
+```
 DON’T ADD GRATUITOUS CONTEXT
 In an imaginary application called “Gas Station Deluxe,” it is a bad idea to prefix every class with GSD. Frankly, you are working against your tools. You type G and press the completion key and are rewarded with a mile-long list of every class in the system. Is that wise? Why make it hard for the IDE to help you?
 

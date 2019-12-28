@@ -1,4 +1,4 @@
-Boundaries
+# 第 8 章 Boundaries
 Image
 
 by James Grenning
@@ -18,25 +18,25 @@ Figure 8-1 The methods of Map
 Image
 
 If our application needs a Map of Sensors, you might find the sensors set up like this:
-
+```java
    Map sensors = new HashMap();
-
+```
 Then, when some other part of the code needs to access the sensor, you see this code:
-
+```java
    Sensor s = (Sensor)sensors.get(sensorId );
-
+```
 We don’t just see it once, but over and over again throughout the code. The client of this code carries the responsibility of getting an Object from the Map and casting it to the right type. This works, but it’s not clean code. Also, this code does not tell its story as well as it could. The readability of this code can be greatly improved by using generics, as shown below:
-
+```java
        Map<Sensor> sensors = new HashMap<Sensor>();
    …
        Sensor s = sensors.get(sensorId );
+```
+However, this doesn’t solve the problem that `Map<Sensor>` provides more capability than we need or want.
 
-However, this doesn’t solve the problem that Map<Sensor> provides more capability than we need or want.
-
-Passing an instance of Map<Sensor> liberally around the system means that there will be a lot of places to fix if the interface to Map ever changes. You might think such a change to be unlikely, but remember that it changed when generics support was added in Java 5. Indeed, we’ve seen systems that are inhibited from using generics because of the sheer magnitude of changes needed to make up for the liberal use of Maps.
+Passing an instance of `Map<Sensor>` liberally around the system means that there will be a lot of places to fix if the interface to Map ever changes. You might think such a change to be unlikely, but remember that it changed when generics support was added in Java 5. Indeed, we’ve seen systems that are inhibited from using generics because of the sheer magnitude of changes needed to make up for the liberal use of Maps.
 
 A cleaner way to use Map might look like the following. No user of Sensors would care one bit if generics were used or not. That choice has become (and always should be) an implementation detail.
-
+```java
    public class Sensors {
      private Map sensors = new HashMap();
  
@@ -46,7 +46,7 @@ A cleaner way to use Map might look like the following. No user of Sensors would
  
      //snip
    }
-
+```
 The interface at the boundary (Map) is hidden. It is able to evolve with very little impact on the rest of the application. The use of generics is no longer a big issue because the casting and type management is handled inside the Sensors class.
 
 This interface is also tailored and constrained to meet the needs of the application. It results in code that is easier to understand and harder to misuse. The Sensors class can enforce design and business rules.
@@ -66,15 +66,15 @@ In learning tests we call the third-party API, as we expect to use it in our app
 
 LEARNING LOG4J
 Let’s say we want to use the apache log4j package rather than our own custom-built logger. We download it and open the introductory documentation page. Without too much reading we write our first test case, expecting it to write “hello” to the console.
-
+```java
    @Test
    public void testLogCreate() {
      Logger logger = Logger.getLogger(“MyLogger”);
      logger.info(“hello”);
    }
-
+```
 When we run it, the logger produces an error that tells us we need something called an Appender. After a little more reading we find that there is a ConsoleAppender. So we create a ConsoleAppender and see whether we have unlocked the secrets of logging to the console.
-
+```java
    @Test
    public void testLogAddAppender() {
      Logger logger = Logger.getLogger(“MyLogger”);
@@ -82,9 +82,9 @@ When we run it, the logger produces an error that tells us we need something cal
      logger.addAppender(appender);
      logger.info(“hello”);
    }
-
+```
 This time we find that the Appender has no output stream. Odd—it seems logical that it’d have one. After a little help from Google, we try the following:
-
+```java
    @Test
    public void testLogAddAppender() {
      Logger logger = Logger.getLogger(“MyLogger”);
@@ -94,7 +94,7 @@ This time we find that the Appender has no output stream. Odd—it seems logical
           ConsoleAppender.SYSTEM_OUT));
      logger.info(“hello”);
    }
-
+```
 That worked; a log message that includes “hello” came out on the console! It seems odd that we have to tell the ConsoleAppender that it writes to the console.
 
 Interestingly enough, when we remove the ConsoleAppender.SystemOut argument, we see that “hello” is still printed. But when we take out the PatternLayout, it once again complains about the lack of an output stream. This is very strange behavior.
@@ -105,7 +105,7 @@ A bit more googling, reading, and testing, and we eventually wind up with Listin
 
 
 Listing 8-1 LogTest.java
-
+```java
    public class LogTest {
        private Logger logger;
        
@@ -134,7 +134,7 @@ Listing 8-1 LogTest.java
               logger.info(“addAppenderWithoutStream”);
            }
    }
-
+```
 Now we know how to get a simple console logger initialized, and we can encapsulate that knowledge into our own logger class so that the rest of our application is isolated from the log4j boundary interface.
 
 LEARNING TESTS ARE BETTER THAN FREE

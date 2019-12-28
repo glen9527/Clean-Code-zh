@@ -1,4 +1,4 @@
-Functions
+# 第 3 章 Functions
 Image
 
 Image
@@ -11,7 +11,7 @@ Consider the code in Listing 3-1. It’s hard to find a long function in FitNess
 
 
 Listing 3-1 HtmlUtil.java (FitNesse 20070619)
-
+```java
    public static String testableHtml(
      PageData pageData,
      boolean includeSuiteSetup
@@ -76,14 +76,14 @@ Listing 3-1 HtmlUtil.java (FitNesse 20070619)
       pageData.setContent(buffer.toString());
       return pageData.getHtml();
    }
-
+```
 Do you understand the function after three minutes of study? Probably not. There’s too much going on in there at too many different levels of abstraction. There are strange strings and odd function calls mixed in with doubly nested if statements controlled by flags.
 
 However, with just a few simple method extractions, some renaming, and a little restructuring, I was able to capture the intent of the function in the nine lines of Listing 3-2. See whether you can understand that in the next 3 minutes.
 
 
 Listing 3-2 HtmlUtil.java (refactored)
-
+```java
    public static String renderPageWithSetupsAndTeardowns(
      PageData pageData, boolean isSuite
    ) throws Exception {
@@ -99,7 +99,7 @@ Listing 3-2 HtmlUtil.java (refactored)
     
      return pageData.getHtml();
    }
-
+```
 Unless you are a student of FitNesse, you probably don’t understand all the details. Still, you probably understand that this function performs the inclusion of some setup and teardown pages into a test page and then renders that page into HTML. If you are familiar with JUnit,2 you probably realize that this function belongs to some kind of Web-based testing framework. And, of course, that is correct. Divining that information from Listing 3-2 is pretty easy, but it’s pretty well obscured by Listing 3-1.
 
 2. An open-source unit-testing tool for Java. www.junit.org
@@ -119,7 +119,7 @@ How short should your functions be? They should usually be shorter than Listing 
 
 
 Listing 3-3 HtmlUtil.java (re-refactored)
-
+```java
    public static String renderPageWith
        SetupsAndTeardowns(
    PageData pageData, boolean isSuite) throws Exception {
@@ -127,7 +127,7 @@ Listing 3-3 HtmlUtil.java (re-refactored)
        includeSetupAndTeardownPages(pageData, isSuite);
      return pageData.getHtml();
    }
-
+```
 Blocks and Indenting
 This implies that the blocks within if statements, else statements, while statements, and so on should be one line long. Probably that line should be a function call. Not only does this keep the enclosing function small, but it also adds documentary value because the function called within the block can have a nicely descriptive name.
 
@@ -198,7 +198,7 @@ Consider Listing 3-4. It shows just one of the operations that might depend on t
 
 
 Listing 3-4 Payroll.java
-
+```java
    public Money calculatePay(Employee e) 
    throws InvalidEmployeeType {
        switch (e.type) {
@@ -212,7 +212,7 @@ Listing 3-4 Payroll.java
            throw new InvalidEmployeeType(e.type);
        }
      }
-
+```
 There are several problems with this function. First, it’s large, and when new employee types are added, it will grow. Second, it very clearly does more than one thing. Third, it violates the Single Responsibility Principle7 (SRP) because there is more than one reason for it to change. Fourth, it violates the Open Closed Principle8 (OCP) because it must change whenever new types are added. But possibly the worst problem with this function is that there are an unlimited number of other functions that will have the same structure. For example we could have
 
 7. a. http://en.wikipedia.org/wiki/Single_responsibility_principle
@@ -222,13 +222,13 @@ b. http://www.objectmentor.com/resources/articles/srp.pdf
 8. a. http://en.wikipedia.org/wiki/Open/closed_principle
 
 b. http://www.objectmentor.com/resources/articles/ocp.pdf
-
+```java
    isPayday(Employee e, Date date),
-
+```
 or
-
+```java
    deliverPay(Employee e, Money pay),
-
+```
 or a host of others. All of which would have the same deleterious structure.
 
 The solution to this problem (see Listing 3-5) is to bury the switch statement in the basement of an ABSTRACT FACTORY,9 and never let anyone see it. The factory will use the switch statement to create appropriate instances of the derivatives of Employee, and the various functions, such as calculatePay, isPayday, and deliverPay, will be dispatched polymorphically through the Employee interface.
@@ -239,7 +239,7 @@ My general rule for switch statements is that they can be tolerated if they appe
 
 
 Listing 3-5 Employee and Factory
-
+```java
    public abstract class Employee {
      public abstract boolean isPayday();
      public abstract Money calculatePay();
@@ -265,7 +265,7 @@ Listing 3-5 Employee and Factory
        }
      }
    }
-
+```
 USE DESCRIPTIVE NAMES
 In Listing 3-7 I changed the name of our example function from testableHtml to SetupTeardownIncluder.render. This is a far better name because it better describes what the function does. I also gave each of the private methods an equally descriptive name such as isTestable or includeSetupAndTeardownPages. It is hard to overestimate the value of good names. Remember Ward’s principle: “You know you are working on clean code when each routine turns out to be pretty much what you expected.” Half the battle to achieving that principle is choosing good names for small functions that do one thing. The smaller and more focused a function is, the easier it is to choose a descriptive name.
 
@@ -322,27 +322,27 @@ On the other hand, here is a triad that is not quite so insidious: assertEquals(
 
 Argument Objects
 When a function seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class of their own. Consider, for example, the difference between the two following declarations:
-
+```java
    Circle makeCircle(double x, double y, double radius);
    Circle makeCircle(Point center, double radius);
-
+```
 Reducing the number of arguments by creating objects out of them may seem like cheating, but it’s not. When groups of variables are passed together, the way x and y are in the example above, they are likely part of a concept that deserves a name of its own.
 
 Argument Lists
 Sometimes we want to pass a variable number of arguments into a function. Consider, for example, the String.format method:
-
+```java
    String.format(”%s worked %.2f hours.”, name, hours);
-
+```
 If the variable arguments are all treated identically, as they are in the example above, then they are equivalent to a single argument of type List. By that reasoning, String.format is actually dyadic. Indeed, the declaration of String.format as shown below is clearly dyadic.
-
+```java
    public String format(String format, Object… args)
-
+```
 So all the same rules apply. Functions that take variable arguments can be monads, dyads, or even triads. But it would be a mistake to give them more arguments than that.
-
+```java
    void monad(Integer… args);
    void dyad(String name, Integer… args);
    void triad(String name, int count, Integer… args);
-
+```
 Verbs and Keywords
 Choosing good names for a function can go a long way toward explaining the intent of the function and the order and intent of the arguments. In the case of a monad, the function and argument should form a very nice verb/noun pair. For example, write(name) is very evocative. Whatever this “name” thing is, it is being “written.” An even better name might be writeField(name), which tells us that the “name” thing is a “field.”
 
@@ -355,7 +355,7 @@ Consider, for example, the seemingly innocuous function in Listing 3-6. This fun
 
 
 Listing 3-6 UserValidator.java
-
+```java
    public class UserValidator {
      private Cryptographer cryptographer;
 
@@ -373,53 +373,53 @@ Listing 3-6 UserValidator.java
        return false;
      }
    }
-
+```
 The side effect is the call to Session.initialize(), of course. The checkPassword function, by its name, says that it checks the password. The name does not imply that it initializes the session. So a caller who believes what the name of the function says runs the risk of erasing the existing session data when he or she decides to check the validity of the user.
 
 This side effect creates a temporal coupling. That is, checkPassword can only be called at certain times (in other words, when it is safe to initialize the session). If it is called out of order, session data may be inadvertently lost. Temporal couplings are confusing, especially when hidden as a side effect. If you must have a temporal coupling, you should make it clear in the name of the function. In this case we might rename the function checkPasswordAndInitializeSession, though that certainly violates “Do one thing.”
 
 Output Arguments
 Arguments are most naturally interpreted as inputs to a function. If you have been programming for more than a few years, I’m sure you’ve done a double-take on an argument that was actually an output rather than an input. For example:
-
+```java
    appendFooter(s);
-
+```
 Does this function append s as the footer to something? Or does it append some footer to s? Is s an input or an output? It doesn’t take long to look at the function signature and see:
-
+```java
    public void appendFooter(StringBuffer report)
-
+```
 This clarifies the issue, but only at the expense of checking the declaration of the function. Anything that forces you to check the function signature is equivalent to a double-take. It’s a cognitive break and should be avoided.
 
 In the days before object oriented programming it was sometimes necessary to have output arguments. However, much of the need for output arguments disappears in OO languages because this is intended to act as an output argument. In other words, it would be better for appendFooter to be invoked as
-
+```java
    report.appendFooter();
-
+```
 In general output arguments should be avoided. If your function must change the state of something, have it change the state of its owning object.
 
 COMMAND QUERY SEPARATION
 Functions should either do something or answer something, but not both. Either your function should change the state of an object, or it should return some information about that object. Doing both often leads to confusion. Consider, for example, the following function:
-
+```java
    public boolean set(String attribute, String value);
-
+```
 This function sets the value of a named attribute and returns true if it is successful and false if no such attribute exists. This leads to odd statements like this:
-
+```java
    if (set(”username”, ”unclebob”))…
-
+```
 Imagine this from the point of view of the reader. What does it mean? Is it asking whether the “username” attribute was previously set to “unclebob”? Or is it asking whether the “username” attribute was successfully set to “unclebob”? It’s hard to infer the meaning from the call because it’s not clear whether the word “set” is a verb or an adjective.
 
 The author intended set to be a verb, but in the context of the if statement it feels like an adjective. So the statement reads as “If the username attribute was previously set to unclebob” and not “set the username attribute to unclebob and if that worked then.…” We could try to resolve this by renaming the set function to setAndCheckIfExists, but that doesn’t much help the readability of the if statement. The real solution is to separate the command from the query so that the ambiguity cannot occur.
-
+```java
    if (attributeExists(”username”)) {
      setAttribute(”username”, ”unclebob”);
      …
    }
-
+```
 PREFER EXCEPTIONS TO RETURNING ERROR CODES
 Returning error codes from command functions is a subtle violation of command query separation. It promotes commands being used as expressions in the predicates of if statements.
-
+```java
    if (deletePage(page) == E_OK)
-
+```
 This does not suffer from verb/adjective confusion but does lead to deeply nested structures. When you return an error code, you create the problem that the caller must deal with the error immediately.
-
+```java
    if (deletePage(page) == E_OK) {
      if (registry.deleteReference(page.name) == E_OK) {
        if (configKeys.deleteKey(page.name.makeKey()) == E_OK){
@@ -434,9 +434,9 @@ This does not suffer from verb/adjective confusion but does lead to deeply neste
      logger.log("delete failed");
      return E_ERROR;
    }
-
+```
 On the other hand, if you use exceptions instead of returned error codes, then the error processing code can be separated from the happy path code and can be simplified:
-
+```java
    try {
      deletePage(page);
      registry.deleteReference(page.name);
@@ -445,10 +445,10 @@ On the other hand, if you use exceptions instead of returned error codes, then t
    catch (Exception e) {
      logger.log(e.getMessage());
    }
-
+```
 Extract Try/Catch Blocks
 Try/catch blocks are ugly in their own right. They confuse the structure of the code and mix error processing with normal processing. So it is better to extract the bodies of the try and catch blocks out into functions of their own.
-
+```java
    public void delete(Page page) {
      try {
        deletePageAndAllReferences(page);
@@ -467,7 +467,7 @@ Try/catch blocks are ugly in their own right. They confuse the structure of the 
    private void logError(Exception e) {
      logger.log(e.getMessage());
    }
-
+```
 In the above, the delete function is all about error processing. It is easy to understand and then ignore. The deletePageAndAllReferences function is all about the processes of fully deleting a page. Error handling can be ignored. This provides a nice separation that makes the code easier to understand and modify.
 
 Error Handling Is One Thing
@@ -475,7 +475,7 @@ Functions should do one thing. Error handing is one thing. Thus, a function that
 
 The Error.java Dependency Magnet
 Returning error codes usually implies that there is some class or enum in which all the error codes are defined.
-
+```java
    public enum Error {
       OK,
       INVALID,
@@ -485,7 +485,7 @@ Returning error codes usually implies that there is some class or enum in which 
       
       WAITING_FOR_EVENT;
    }
-
+```
 Classes like this are a dependency magnet; many other classes must import and use them. Thus, when the Error enum changes, all those other classes need to be recompiled and redeployed.11 This puts a negative pressure on the Error class. Programmers don’t want to add new errors because then they have to rebuild and redeploy everything. So they reuse old error codes instead of adding new ones.
 
 11. Those who felt that they could get away without recompiling and redeploying have been found—and dealt with.
@@ -533,7 +533,7 @@ This chapter has been about the mechanics of writing functions well. If you foll
 SETUPTEARDOWNINCLUDER
 
 Listing 3-7 SetupTeardownIncluder.java
-
+```java
    package fitnesse.html;
    
    import fitnesse.responders.run.SuiteResponder;
@@ -644,3 +644,4 @@ Listing 3-7 SetupTeardownIncluder.java
          .append("\n");
      }
    }
+```

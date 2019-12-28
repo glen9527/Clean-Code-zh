@@ -1,4 +1,4 @@
-Objects and Data Structures
+# 第 6 章 Objects and Data Structures
 Image
 
 Image
@@ -10,15 +10,15 @@ Consider the difference between Listing 6-1 and Listing 6-2. Both represent the 
 
 
 Listing 6-1 Concrete Point
-
+```java
    public class Point {
      public double x;
      public double y;
    }
-
+```
 
 Listing 6-2 Abstract Point
-
+```java
    public interface Point {
      double getX();
      double getY();
@@ -27,7 +27,7 @@ Listing 6-2 Abstract Point
      double getTheta();
      void setPolar(double r, double theta);
    }
-
+```
 The beautiful thing about Listing 6-2 is that there is no way you can tell whether the implementation is in rectangular or polar coordinates. It might be neither! And yet the interface still unmistakably represents a data structure.
 
 But it represents more than just a data structure. The methods enforce an access policy. You can read the individual coordinates independently, but you must set the coordinates together as an atomic operation.
@@ -40,19 +40,19 @@ Consider Listing 6-3 and Listing 6-4. The first uses concrete terms to communica
 
 
 Listing 6-3 Concrete Vehicle
-
+```java
    public interface Vehicle {
      double getFuelTankCapacityInGallons();
      double getGallonsOfGasoline();
    }
-
+```
 
 Listing 6-4 Abstract Vehicle
-
+```java
    public interface Vehicle {
      double getPercentFuelRemaining();
    }
-
+```
 In both of the above cases the second option is preferable. We do not want to expose the details of our data. Rather we want to express our data in abstract terms. This is not merely accomplished by using interfaces and/or getters and setters. Serious thought needs to be put into the best way to represent the data that an object contains. The worst option is to blithely add getters and setters.
 
 DATA/OBJECT ANTI-SYMMETRY
@@ -62,7 +62,7 @@ Consider, for example, the procedural shape example in Listing 6-5. The Geometry
 
 
 Listing 6-5 Procedural Shape
-
+```java
    public class Square {
      public Point topLeft;
      public double side;
@@ -100,7 +100,7 @@ Listing 6-5 Procedural Shape
        throw new NoSuchShapeException();
      }
    }
-
+```
 Object-oriented programmers might wrinkle their noses at this and complain that it is procedural—and they’d be right. But the sneer may not be warranted. Consider what would happen if a perimeter() function were added to Geometry. The shape classes would be unaffected! Any other classes that depended upon the shapes would also be unaffected! On the other hand, if I add a new shape, I must change all the functions in Geometry to deal with it. Again, read that over. Notice that the two conditions are diametrically opposed.
 
 Now consider the object-oriented solution in Listing 6-6. Here the area() method is polymorphic. No Geometry class is necessary. So if I add a new shape, none of the existing functions are affected, but if I add a new function all of the shapes must be changed!1
@@ -109,7 +109,7 @@ Now consider the object-oriented solution in Listing 6-6. Here the area() method
 
 
 Listing 6-6 Polymorphic Shapes
-
+```java
    public class Square implements Shape {
      private Point topLeft;
      private double side;
@@ -138,7 +138,7 @@ Listing 6-6 Polymorphic Shapes
          return PI * radius * radius;
        }
    }
-
+```
 Again, we see the complimentary nature of these two definitions; they are virtual opposites! This exposes the fundamental dichotomy between objects and data structures:
 
 Procedural code (code using data structures) makes it easy to add new functions without changing the existing data structures. OO code, on the other hand, makes it easy to add new classes without changing existing functions.
@@ -173,16 +173,16 @@ The method should not invoke methods on objects that are returned by any of the 
 The following code3 appears to violate the Law of Demeter (among other things) because it calls the getScratchDir() function on the return value of getOptions() and then calls getAbsolutePath() on the return value of getScratchDir().
 
 3. Found somewhere in the apache framework.
-
+```java
    final String outputDir = ctxt.getOptions().getScratchDir().getAbsolutePath();
-
+```
 Train Wrecks
 This kind of code is often called a train wreck because it look like a bunch of coupled train cars. Chains of calls like this are generally considered to be sloppy style and should be avoided [G36]. It is usually best to split them up as follows:
-
+```java
    Options opts = ctxt.getOptions();
    File scratchDir = opts.getScratchDir();
    final String outputDir = scratchDir.getAbsolutePath();
-
+```
 Are these two snippets of code violations of the Law of Demeter? Certainly the containing module knows that the ctxt object contains options, which contain a scratch directory, which has an absolute path. That’s a lot of knowledge for one function to know. The calling function knows how to navigate through a lot of different objects.
 
 Image
@@ -190,9 +190,9 @@ Image
 Whether this is a violation of Demeter depends on whether or not ctxt, Options, and ScratchDir are objects or data structures. If they are objects, then their internal structure should be hidden rather than exposed, and so knowledge of their innards is a clear violation of the Law of Demeter. On the other hand, if ctxt, Options, and ScratchDir are just data structures with no behavior, then they naturally expose their internal structure, and so Demeter does not apply.
 
 The use of accessor functions confuses the issue. If the code had been written as follows, then we probably wouldn’t be asking about Demeter violations.
-
+```java
    final String outputDir = ctxt.options.scratchDir.absolutePath;
-
+```
 This issue would be a lot less confusing if data structures simply had public variables and no functions, whereas objects had private variables and public functions. However, there are frameworks and standards (e.g., “beans”) that demand that even simple data structures have accessors and mutators.
 
 Hybrids
@@ -204,27 +204,27 @@ Such hybrids make it hard to add new functions but also make it hard to add new 
 
 Hiding Structure
 What if ctxt, options, and scratchDir are objects with real behavior? Then, because objects are supposed to hide their internal structure, we should not be able to navigate through them. How then would we get the absolute path of the scratch directory?
-
+```java
    ctxt.getAbsolutePathOfScratchDirectoryOption();
-
+```
 or
-
+```java
    ctx.getScratchDirectoryOption().getAbsolutePath()
-
+```
 The first option could lead to an explosion of methods in the ctxt object. The second presumes that getScratchDirectoryOption() returns a data structure, not an object. Neither option feels good.
 
 If ctxt is an object, we should be telling it to do something; we should not be asking it about its internals. So why did we want the absolute path of the scratch directory? What were we going to do with it? Consider this code from (many lines farther down in) the same module:
-
+```java
    String outFile = outputDir + “/” + className.replace('.', '/') + “.class”;
    FileOutputStream fout = new FileOutputStream(outFile);
    BufferedOutputStream bos = new BufferedOutputStream(fout);
-
+```
 The admixture of different levels of detail [G34][G6] is a bit troubling. Dots, slashes, file extensions, and File objects should not be so carelessly mixed together, and mixed with the enclosing code. Ignoring that, however, we see that the intent of getting the absolute path of the scratch directory was to create a scratch file of a given name.
 
 So, what if we told the ctxt object to do this?
-
+```java
    BufferedOutputStream bos = ctxt.createScratchFileStream(classFileName);
-
+```
 That seems like a reasonable thing for an object to do! This allows ctxt to hide its internals and prevents the current function from having to violate the Law of Demeter by navigating through objects it shouldn’t know about.
 
 DATA TRANSFER OBJECTS
@@ -234,7 +234,7 @@ Somewhat more common is the “bean” form shown in Listing 6-7. Beans have pri
 
 
 Listing 6-7 address.java
-
+```java
    public class Address {
      private String street;
      private String streetExtra;
@@ -271,7 +271,7 @@ Listing 6-7 address.java
       return zip;
     }
    }
-
+```
 Active Record
 Active Records are special forms of DTOs. They are data structures with public (or bean-accessed) variables; but they typically have navigational methods like save and find. Typically these Active Records are direct translations from database tables, or other data sources.
 

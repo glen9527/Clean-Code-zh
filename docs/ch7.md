@@ -1,4 +1,4 @@
-Error Handling
+# 第 7 章 Error Handling
 Image
 
 Image
@@ -18,7 +18,7 @@ Back in the distant past there were many languages that didn’t have exceptions
 
 
 Listing 7-1 DeviceController.java
-
+```java
    public class DeviceController {
      …
      public void sendShutDown() {
@@ -41,14 +41,14 @@ Listing 7-1 DeviceController.java
      }
      …
    }
-
+```
 The problem with these approaches is that they clutter the caller. The caller must check for errors immediately after the call. Unfortunately, it’s easy to forget. For this reason it is better to throw an exception when you encounter an error. The calling code is cleaner. Its logic is not obscured by error handling.
 
 Listing 7-2 shows the code after we’ve chosen to throw exceptions in methods that can detect errors.
 
 
 Listing 7-2 DeviceController.java (with exceptions)
-
+```java
    public class DeviceController {
      …
      
@@ -77,7 +77,7 @@ Listing 7-2 DeviceController.java (with exceptions)
  
     …
    } 
-
+```
 Notice how much cleaner it is. This isn’t just a matter of aesthetics. The code is better because two concerns that were tangled, the algorithm for device shutdown and error handling, are now separated. You can look at each of those concerns and understand them independently.
 
 WRITE YOUR TRY-CATCH-FINALLY STATEMENT FIRST
@@ -88,21 +88,21 @@ In a way, try blocks are like transactions. Your catch has to leave your program
 Let’s look at an example. We need to write some code that accesses a file and reads some serialized objects.
 
 We start with a unit test that shows that we’ll get an exception when the file doesn’t exist:
-
+```java
    @Test(expected = StorageException.class)
    public void retrieveSectionShouldThrowOnInvalidFileName() {
      sectionStore.retrieveSection(“invalid - file”);
    }
-
+```
 The test drives us to create this stub:
-
+```java
    public List<RecordedGrip> retrieveSection(String sectionName) {
      // dummy return until we have a real implementation
      return new ArrayList<RecordedGrip>();
    }
-
+```
 Our test fails because it doesn’t throw an exception. Next, we change our implementation so that it attempts to access an invalid file. This operation throws an exception:
-
+```java
    public List<RecordedGrip> retrieveSection(String sectionName) {
      try {
        FileInputStream stream = new FileInputStream(sectionName)
@@ -111,9 +111,9 @@ Our test fails because it doesn’t throw an exception. Next, we change our impl
      }
      return new ArrayList<RecordedGrip>();
    }
-
+```
 Our test passes now because we’ve caught the exception. At this point, we can refactor. We can narrow the type of the exception we catch to match the type that is actually thrown from the FileInputStream constructor: FileNotFoundException:
-
+```java
    public List<RecordedGrip> retrieveSection(String sectionName) {
      try {
        FileInputStream stream = new FileInputStream(sectionName);
@@ -123,7 +123,7 @@ Our test passes now because we’ve caught the exception. At this point, we can 
      }
      return new ArrayList<RecordedGrip>();
    }
-
+```
 Now that we’ve defined the scope with a try-catch structure, we can use TDD to build up the rest of the logic that we need. That logic will be added between the creation of the FileInputStream and the close, and can pretend that nothing goes wrong.
 
 Try to write tests that force exceptions, and then add behavior to your handler to satisfy your tests. This will cause you to build the transaction scope of the try block first and will help you maintain the transaction nature of that scope.
@@ -150,7 +150,7 @@ DEFINE EXCEPTION CLASSES IN TERMS OF A CALLER’S NEEDS
 There are many ways to classify errors. We can classify them by their source: Did they come from one component or another? Or their type: Are they device failures, network failures, or programming errors? However, when we define exception classes in an application, our most important concern should be how they are caught.
 
 Let’s look at an example of poor exception classification. Here is a try-catch-finally statement for a third-party library call. It covers all of the exceptions that the calls can throw:
-
+```java
    ACMEPort port = new ACMEPort(12);
  
    try {
@@ -167,11 +167,11 @@ Let’s look at an example of poor exception classification. Here is a try-catch
    } finally {
      …
    }
-
+```
 That statement contains a lot of duplication, and we shouldn’t be surprised. In most exception handling situations, the work that we do is relatively standard regardless of the actual cause. We have to record an error and make sure that we can proceed.
 
 In this case, because we know that the work that we are doing is roughly the same regardless of the exception, we can simplify our code considerably by wrapping the API that we are calling and making sure that it returns a common exception type:
-
+```java
    LocalPort port = new LocalPort(12);
    try {
      port.open();
@@ -181,9 +181,9 @@ In this case, because we know that the work that we are doing is roughly the sam
    } finally {
      …
    }
-
+```
 Our LocalPort class is just a simple wrapper that catches and translates exceptions thrown by the ACMEPort class:
-
+```java
    public class LocalPort {
      private ACMEPort innerPort;
  
@@ -204,7 +204,7 @@ Our LocalPort class is just a simple wrapper that catches and translates excepti
      }
      …
    }
-
+```
 Wrappers like the one we defined for ACMEPort can be very useful. In fact, wrapping third-party APIs is a best practice. When you wrap a third-party API, you minimize your dependencies upon it: You can choose to move to a different library in the future without much penalty. Wrapping also makes it easier to mock out third-party calls when you are testing your own code.
 
 One final advantage of wrapping is that you aren’t tied to a particular vendor’s API design choices. You can define an API that you feel comfortable with. In the preceding example, we defined a single exception type for port device failure and found that we could write much cleaner code.
@@ -217,32 +217,32 @@ If you follow the advice in the preceding sections, you’ll end up with a good 
 Image
 
 Let’s take a look at an example. Here is some awkward code that sums expenses in a billing application:
-
+```java
    try {
      MealExpenses expenses = expenseReportDAO.getMeals(employee.getID());
      m_total += expenses.getTotal();
    } catch(MealExpensesNotFound e) {
      m_total += getMealPerDiem();
    }
-
+```
 In this business, if meals are expensed, they become part of the total. If they aren’t, the employee gets a meal per diem amount for that day. The exception clutters the logic. Wouldn’t it be better if we didn’t have to deal with the special case? If we didn’t, our code would look much simpler. It would look like this:
-
+```java
    MealExpenses expenses = expenseReportDAO.getMeals(employee.getID());
    m_total += expenses.getTotal();
 
 Can we make the code that simple? It turns out that we can. We can change the ExpenseReportDAO so that it always returns a MealExpense object. If there are no meal expenses, it returns a MealExpense object that returns the per diem as its total:
-
+```java
    public class PerDiemMealExpenses implements MealExpenses {
      public int getTotal() {
        // return the per diem default
      }
    }
-
+```
 This is called the SPECIAL CASE PATTERN [Fowler]. You create a class or configure an object so that it handles a special case for you. When you do, the client code doesn’t have to deal with exceptional behavior. That behavior is encapsulated in the special case object.
 
 DON’T RETURN NULL
 I think that any discussion about error handling should include mention of the things we do that invite errors. The first on the list is returning null. I can’t begin to count the number of applications I’ve seen in which nearly every other line was a check for null. Here is some example code:
-
+```java
    public void registerItem(Item item) {
      if (item != null) {
        ItemRegistry registry = peristentStore.getItemRegistry();
@@ -254,7 +254,7 @@ I think that any discussion about error handling should include mention of the t
        }
      }
    }
-
+```
 If you work in a code base with code like this, it might not look all that bad to you, but it is bad! When we return null, we are essentially creating work for ourselves and foisting problems upon our callers. All it takes is one missing null check to send an application spinning out of control.
 
 Did you notice the fact that there wasn’t a null check in the second line of that nested if statement? What would have happened at runtime if persistentStore were null? We would have had a NullPointerException at runtime, and either someone is catching NullPointerException at the top level or they are not. Either way it’s bad. What exactly should you do in response to a NullPointerException thrown from the depths of your application?
@@ -262,35 +262,35 @@ Did you notice the fact that there wasn’t a null check in the second line of t
 It’s easy to say that the problem with the code above is that it is missing a null check, but in actuality, the problem is that it has too many. If you are tempted to return null from a method, consider throwing an exception or returning a SPECIAL CASE object instead. If you are calling a null-returning method from a third-party API, consider wrapping that method with a method that either throws an exception or returns a special case object.
 
 In many cases, special case objects are an easy remedy. Imagine that you have code like this:
-
+```java
    List<Employee> employees = getEmployees();
    if (employees != null) {
      for(Employee e : employees) {
        totalPay += e.getPay();
      }
    }
-
+```
 Right now, getEmployees can return null, but does it have to? If we change getEmployee so that it returns an empty list, we can clean up the code:
-
+```java
    List<Employee> employees = getEmployees();
    for(Employee e : employees) {
      totalPay += e.getPay();
    }
-
+```
 Fortunately, Java has Collections.emptyList(), and it returns a predefined immutable list that we can use for this purpose:
-
+```java
    public List<Employee> getEmployees() {
      if( .. there are no employees .. )
        return Collections.emptyList();
    }
-
+```
 If you code this way, you will minimize the chance of NullPointerExceptions and your code will be cleaner.
 
 DON’T PASS NULL
 Returning null from methods is bad, but passing null into methods is worse. Unless you are working with an API which expects you to pass null, you should avoid passing null in your code whenever possible.
 
 Let’s look at an example to see why. Here is a simple method which calculates a metric for two points:
-
+```java
    public class MetricsCalculator
    {
      public double xProjection(Point p1, Point p2) {
@@ -298,15 +298,15 @@ Let’s look at an example to see why. Here is a simple method which calculates 
      }
      …
    }
-
+```
 What happens when someone passes null as an argument?
-
+```java
    calculator.xProjection(null, new Point(12, 13));
 
 We’ll get a NullPointerException, of course.
 
 How can we fix it? We could create a new exception type and throw it:
-
+```java
    public class MetricsCalculator
    {
     public double xProjection(Point p1, Point p2) {
@@ -317,11 +317,11 @@ How can we fix it? We could create a new exception type and throw it:
       return (p2.x – p1.x) * 1.5;
     }
    }
-
+```
 Is this better? It might be a little better than a null pointer exception, but remember, we have to define a handler for InvalidArgumentException. What should the handler do? Is there any good course of action?
 
 There is another alternative. We could use a set of assertions:
-
+```java
    public class MetricsCalculator
    {
      public double xProjection(Point p1, Point p2) {
@@ -330,7 +330,7 @@ There is another alternative. We could use a set of assertions:
        return (p2.x – p1.x) * 1.5;
      }
    }
-
+```
 It’s good documentation, but it doesn’t solve the problem. If someone passes null, we’ll still have a runtime error.
 
 In most programming languages there is no good way to deal with a null that is passed by a caller accidentally. Because this is the case, the rational approach is to forbid passing null by default. When you do, you can code with the knowledge that a null in an argument list is an indication of a problem, and end up with far fewer careless mistakes.

@@ -1,4 +1,4 @@
-Formatting
+# 第 5 章 Formatting
 Image
 
 Image
@@ -46,7 +46,7 @@ Consider, for example, Listing 5-1. There are blank lines that separate the pack
 
 
 Listing 5-1 BoldWidget.java
-
+```java
    package fitnesse.wikitext.widgets;
  
    import java.util.regex.*;
@@ -71,12 +71,12 @@ Listing 5-1 BoldWidget.java
    }
 
   }
-
+```
 Taking those blank lines out, as in Listing 5-2, has a remarkably obscuring effect on the readability of the code.
 
 
 Listing 5-2 BoldWidget.java
-
+```java
    package fitnesse.wikitext.widgets;
    import java.util.regex.*;
    public class BoldWidget extends ParentWidget {
@@ -94,7 +94,7 @@ Listing 5-2 BoldWidget.java
        return html.toString();
      }
    }
-
+```
 This effect is even more pronounced when you unfocus your eyes. In the first example the different groupings of lines pop out at you, whereas the second example looks like a muddle. The difference between these two listings is a bit of vertical openness.
 
 Vertical Density
@@ -102,7 +102,7 @@ If openness separates concepts, then vertical density implies close association.
 
 
 Listing 5-3
-
+```java
    public class ReporterConfig {
  
      /**
@@ -118,12 +118,12 @@ Listing 5-3
      public void addProperty(Property property) {
        m_properties.add(property);
      }
-
+```
 Listing 5-4 is much easier to read. It fits in an “eye-full,” or at least it does for me. I can look at it and see that this is a class with two variables and a method, without having to move my head or eyes much. The previous listing forces me to use much more eye and head motion to achieve the same level of comprehension.
 
 
 Listing 5-4
-
+```java
    public class ReporterConfig {
      private String m_className;
      private List<Property> m_properties = new ArrayList<Property>(); 
@@ -131,7 +131,7 @@ Listing 5-4
      public void addProperty(Property property) {
        m_properties.add(property);
      }
-
+```
 Vertical Distance
 Have you ever chased your tail through a class, hopping from one function to the next, scrolling up and down the source file, trying to divine how the functions relate and operate, only to get lost in a rat’s nest of confusion? Have you ever hunted up the chain of inheritance for the definition of a variable or function? This is frustrating because you are trying to understand what the system does, but you are spending your time and mental energy on trying to locate and remember where the pieces are.
 
@@ -140,7 +140,7 @@ Concepts that are closely related should be kept vertically close to each other 
 For those concepts that are so closely related that they belong in the same source file, their vertical separation should be a measure of how important each is to the understandability of the other. We want to avoid forcing our readers to hop around through our source files and classes.
 
 Variable Declarations. Variables should be declared as close to their usage as possible. Because our functions are very short, local variables should appear a the top of each function, as in this longish function from Junit4.3.1.
-
+```java
    private static void readPreferences() {
      InputStream is= null;
      try {
@@ -155,9 +155,9 @@ Variable Declarations. Variables should be declared as close to their usage as p
        }
      }
   }
-
+```
 Control variables for loops should usually be declared within the loop statement, as in this cute little function from the same source.
-
+```java
    public int countTestCases() {
      int count= 0;
      for (Test each : tests)
@@ -166,7 +166,7 @@ Control variables for loops should usually be declared within the loop statement
    }
 
 In rare cases a variable might be declared at the top of a block or just before a loop in a long-ish function. You can see such a variable in this snippet from the midst of a very long function in TestNG.
-
+```java
    …
    for (XmlTest test : m_suite.getTests()) {
          TestRunner tr = m_runnerFactory.newTestRunner(this, test);
@@ -184,13 +184,13 @@ In rare cases a variable might be declared at the top of a block or just before 
        }
      }
    …
-
+```
 Instance variables, on the other hand, should be declared at the top of the class. This should not increase the vertical distance of these variables, because in a well-designed class, they are used by many, if not all, of the methods of the class.
 
 There have been many debates over where instance variables should go. In C++ we commonly practiced the so-called scissors rule, which put all the instance variables at the bottom. The common convention in Java, however, is to put them all at the top of the class. I see no reason to follow any other convention. The important thing is for the instance variables to be declared in one well-known place. Everybody should know where to go to see the declarations.
 
 Consider, for example, the strange case of the TestSuite class in JUnit 4.3.1. I have greatly attenuated this class to make the point. If you look about halfway down the listing, you will see two instance variables declared there. It would be hard to hide them in a better place. Someone reading this code would have to stumble across the declarations by accident (as I did).
-
+```java
    public class TestSuite implements Test {
      static public Test createTest(Class<? extends TestCase> theClass,
                                   String name)  {
@@ -227,12 +227,12 @@ Consider, for example, the strange case of the TestSuite class in JUnit 4.3.1. I
      }
      … … … … …
   }
-
+```
 Dependent Functions. If one function calls another, they should be vertically close, and the caller should be above the callee, if at all possible. This gives the program a natural flow. If the convention is followed reliably, readers will be able to trust that function definitions will follow shortly after their use. Consider, for example, the snippet from FitNesse in Listing 5-5. Notice how the topmost function calls those below it and how they in turn call those below them. This makes it easy to find the called functions and greatly enhances the readability of the whole module.
 
 
 Listing 5-5 WikiPageResponder.java
-
+```java
    public class WikiPageResponder implements SecureResponder {
      protected WikiPage page;
      protected PageData pageData;
@@ -285,7 +285,7 @@ Listing 5-5 WikiPageResponder.java
        return response;
      }
    …
-
+```
 As an aside, this snippet provides a nice example of keeping constants at the appropriate level [G35]. The “FrontPage” constant could have been buried in the getPageNameOrDefault function, but that would have hidden a well-known and expected constant in an inappropriately low-level function. It was better to pass that constant down from the place where it makes sense to know it to the place that actually uses it.
 
 Conceptual Affinity. Certain bits of code want to be near other bits. They have a certain conceptual affinity. The stronger that affinity, the less vertical distance there should be between them.
@@ -293,7 +293,7 @@ Conceptual Affinity. Certain bits of code want to be near other bits. They have 
 As we have seen, this affinity might be based on a direct dependence, such as one function calling another, or a function using a variable. But there are other possible causes of affinity. Affinity might be caused because a group of functions perform a similar operation. Consider this snippet of code from Junit 4.3.1:
 
 Image
-
+```java
    public class Assert {
      static public void assertTrue(String message, boolean condition) {
        if (!condition)
@@ -312,7 +312,7 @@ Image
        assertFalse(null, condition);
      }
    …
-
+```
 These functions have a strong conceptual affinity because they share a common naming scheme and perform variations of the same basic task. The fact that they call each other is secondary. Even if they didn’t, they would still want to be close together.
 
 Vertical Ordering
@@ -336,7 +336,7 @@ I used to follow the rule that you should never have to scroll to the right. But
 
 Horizontal Openness and Density
 We use horizontal white space to associate things that are strongly related and disassociate things that are more weakly related. Consider the following function:
-
+```java
    private void measureLine(String line) {
      lineCount++;
      int lineSize = line.length();
@@ -344,13 +344,13 @@ We use horizontal white space to associate things that are strongly related and 
      lineWidthHistogram.addLine(lineSize, lineCount);
      recordWidestLine(lineSize);
    }
-
+```
 I surrounded the assignment operators with white space to accentuate them. Assignment statements have two distinct and major elements: the left side and the right side. The spaces make that separation obvious.
 
 On the other hand, I didn’t put spaces between the function names and the opening parenthesis. This is because the function and its arguments are closely related. Separating them makes them appear disjoined instead of conjoined. I separate arguments within the function call parenthesis to accentuate the comma and show that the arguments are separate.
 
 Another use for white space is to accentuate the precedence of operators.
-
+```java
    public class Quadratic {
      public static double root1(double a, double b, double c) {
        double determinant = determinant(a, b, c);
@@ -366,7 +366,7 @@ Another use for white space is to accentuate the precedence of operators.
        return b*b - 4*a*c;
      }
    }
-
+```
 Notice how nicely the equations read. The factors have no white space between them because they are high precedence. The terms are separated by white space because addition and subtraction are lower precedence.
 
 Unfortunately, most tools for reformatting code are blind to the precedence of operators and impose the same spacing throughout. So subtle spacings like those shown above tend to get lost after you reformat the code.
@@ -375,7 +375,7 @@ Horizontal Alignment
 When I was an assembly language programmer,3 I used horizontal alignment to accentuate certain structures. When I started coding in C, C++, and eventually Java, I continued to try to line up all the variable names in a set of declarations, or all the rvalues in a set of assignment statements. My code might have looked like this:
 
 3. Who am I kidding? I still am an assembly language programmer. You can take the boy away from the metal, but you can’t take the metal out of the boy!
-
+```java
    public class FitNesseExpediter implements ResponseSender
    {
      private   Socket           socket;
@@ -398,11 +398,11 @@ When I was an assembly language programmer,3 I used horizontal alignment to acce
        output =                  s.getOutputStream();
        requestParsingTimeLimit = 10000;
      }
-
+```
 I have found, however, that this kind of alignment is not useful. The alignment seems to emphasize the wrong things and leads my eye away from the true intent. For example, in the list of declarations above you are tempted to read down the list of variable names without looking at their types. Likewise, in the list of assignment statements you are tempted to look down the list of rvalues without ever seeing the assignment operator. To make matters worse, automatic reformatting tools usually eliminate this kind of alignment.
 
 So, in the end, I don’t do this kind of thing anymore. Nowadays I prefer unaligned declarations and assignments, as shown below, because they point out an important deficiency. If I have long lists that need to be aligned, the problem is the length of the lists, not the lack of alignment. The length of the list of declarations in FitNesseExpediter below suggests that this class should be split up.
-
+```java
    public class FitNesseExpediter implements ResponseSender
    {
      private Socket socket;
@@ -425,7 +425,7 @@ So, in the end, I don’t do this kind of thing anymore. Nowadays I prefer unali
        output = s.getOutputStream();
        requestParsingTimeLimit = 10000;
      }
-
+```
 Indentation
 A source file is a hierarchy rather like an outline. There is information that pertains to the file as a whole, to the individual classes within the file, to the methods within the classes, to the blocks within the methods, and recursively to the blocks within the blocks. Each level of this hierarchy is a scope into which names can be declared and in which declarations and executable statements are interpreted.
 
@@ -434,7 +434,7 @@ To make this hierarchy of scopes visible, we indent the lines of source code in 
 Programmers rely heavily on this indentation scheme. They visually line up lines on the left to see what scope they appear in. This allows them to quickly hop over scopes, such as implementations of if or while statements, that are not relevant to their current situation. They scan the left for new method declarations, new variables, and even new classes. Without indentation, programs would be virtually unreadable by humans.
 
 Consider the following programs that are syntactically and semantically identical:
-
+```java
    public class FitNesseServer implements SocketServer { private FitNesseContext 
    context; public FitNesseServer(FitNesseContext context) { this.context = 
    context; } public void serve(Socket s) { serve(s, 10000); } public void 
@@ -469,11 +469,11 @@ Consider the following programs that are syntactically and semantically identica
      }
   }
 }
-
+```
 Your eye can rapidly discern the structure of the indented file. You can almost instantly spot the variables, constructors, accessors, and methods. It takes just a few seconds to realize that this is some kind of simple front end to a socket, with a time-out. The unindented version, however, is virtually impenetrable without intense study.
 
 Breaking Indentation. It is sometimes tempting to break the indentation rule for short if statements, short while loops, or short functions. Whenever I have succumbed to this temptation, I have almost always gone back and put the indentation back in. So I avoid collapsing scopes down to one line like this:
-
+```java
    public class CommentWidget extends TextWidget
    {
      public static final String REGEXP = “^#[^\r\n]*(?:(?:\r\n)|\n|\r)?”;
@@ -481,9 +481,9 @@ Breaking Indentation. It is sometimes tempting to break the indentation rule for
      public CommentWidget(ParentWidget parent, String text){super(parent, text);}
      public String render() throws Exception {return “”; }
    }
-
+```
 I prefer to expand and indent the scopes instead, like this:
-
+```java
    public class CommentWidget extends TextWidget {
      public static final String REGEXP = “^#[^\r\n]*(?:(?:\r\n)|\n|\r)?”
  
@@ -495,12 +495,12 @@ I prefer to expand and indent the scopes instead, like this:
        return “”;
      }
    }
-
+```
 Dummy Scopes
 Sometimes the body of a while or for statement is a dummy, as shown below. I don’t like these kinds of structures and try to avoid them. When I can’t avoid them, I make sure that the dummy body is properly indented and surrounded by braces. I can’t tell you how many times I’ve been fooled by a semicolon silently sitting at the end of a while loop on the same line. Unless you make that semicolon visible by indenting it on it’s own line, it’s just too hard to see.
-
+```java
    while (dis.read(buf, 0, readBufferSize) != -1)     ;
-
+```
 TEAM RULES
 The title of this section is a play on words. Every programmer has his own favorite formatting rules, but if he works in a team, then the team rules.
 
@@ -517,7 +517,7 @@ The rules I use personally are very simple and are illustrated by the code in Li
 
 
 Listing 5-6 CodeAnalyzer.java
-
+```java
    public int getWidestLineNumber() {
      return widestLineNumber;
    }
@@ -552,3 +552,4 @@ Listing 5-6 CodeAnalyzer.java
      return sortedWidths;
    }
   }
+```
