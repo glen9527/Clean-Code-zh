@@ -45,7 +45,8 @@ module.exports = {
         "ch14.md",
         "ch15.md",
         "ch16.md",
-        "ch17.md"
+        "ch17.md",
+        "apA.md"
       ]
     }
   }
