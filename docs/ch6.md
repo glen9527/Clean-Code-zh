@@ -1,7 +1,6 @@
 # 第 6 章 Objects and Data Structures
-Image
 
-Image
+![](figures/ch6/6_1fig_martin.jpg)
 
 There is a reason that we keep our variables private. We don’t want anyone else to depend on them. We want to keep the freedom to change their type or implementation on a whim or an impulse. Why, then, do so many programmers automatically add getters and setters to their objects, exposing their private variables as if they were public?
 
@@ -160,13 +159,10 @@ There is a well-known heuristic called the Law of Demeter2 that says a module sh
 
 More precisely, the Law of Demeter says that a method f of a class C should only call the methods of these:
 
-• C
-
-• An object created by f
-
-• An object passed as an argument to f
-
-• An object held in an instance variable of C
+- C
+- An object created by f
+- An object passed as an argument to f
+- An object held in an instance variable of C
 
 The method should not invoke methods on objects that are returned by any of the allowed functions. In other words, talk to friends, not to strangers.
 
@@ -185,7 +181,7 @@ This kind of code is often called a train wreck because it look like a bunch of 
 ```
 Are these two snippets of code violations of the Law of Demeter? Certainly the containing module knows that the ctxt object contains options, which contain a scratch directory, which has an absolute path. That’s a lot of knowledge for one function to know. The calling function knows how to navigate through a lot of different objects.
 
-Image
+![](figures/ch6/6_2fig_martin.jpg)
 
 Whether this is a violation of Demeter depends on whether or not ctxt, Options, and ScratchDir are objects or data structures. If they are objects, then their internal structure should be hidden rather than exposed, and so knowledge of their innards is a clear violation of the Law of Demeter. On the other hand, if ctxt, Options, and ScratchDir are just data structures with no behavior, then they naturally expose their internal structure, and so Demeter does not apply.
 

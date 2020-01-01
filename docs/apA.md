@@ -49,9 +49,8 @@ This is a classic example of validating the throughput of a system. This system 
 
 What happens if the test fails? Short of developing some kind of event polling loop, there is not much to do within a single thread that will make this code any faster. Will using multiple threads solve the problem? It might, but we need to know where the time is being spent. There are two possibilities:
 
-• I/O—using a socket, connecting to a database, waiting for virtual memory swapping, and so on.
-
-• Processor—numerical calculations, regular expression processing, garbage collection, and so on.
+- I/O—using a socket, connecting to a database, waiting for virtual memory swapping, and so on.
+- Processor—numerical calculations, regular expression processing, garbage collection, and so on.
 
 Systems typically have some of each, but for a given operation one tends to dominate. If the code is processor bound, more processing hardware can improve throughput, making our test pass. But there are only so many CPU cycles available, so adding threads to a processor-bound problem will not make it go faster.
 
@@ -91,13 +90,10 @@ How many threads might our server create? The code sets no limit, so the we coul
 
 But set the behavioral problem aside for the moment. The solution shown has problems of cleanliness and structure. How many responsibilities does the server code have?
 
-• Socket connection management
-
-• Client processing
-
-• Threading policy
-
-• Server shutdown policy
+- Socket connection management
+- Client processing
+- Threading policy
+- Server shutdown policy
 
 Unfortunately, all these responsibilities live in the process function. In addition, the code crosses many different levels of abstraction. So, small as the process function is, it needs to be repartitioned.
 
@@ -181,15 +177,13 @@ Review the method incrementValue, a one-line Java method with no looping or bran
 ```
 Ignore integer overflow and assume that only one thread has access to a single instance of IdGenerator. In this case there is a single path of execution and a single guaranteed result:
 
-• The value returned is equal to the value of lastIdUsed, both of which are one greater than just before calling the method.
+- The value returned is equal to the value of lastIdUsed, both of which are one greater than just before calling the method.
 
 What happens if we use two threads and leave the method unchanged? What are the possible outcomes if each thread calls incrementValue once? How many possible paths of execution are there? First, the outcomes (assume lastIdUsed starts with a value of 93):
 
-• Thread 1 gets the value of 94, thread 2 gets the value of 95, and lastIdUsed is now 95.
-
-• Thread 1 gets the value of 95, thread 2 gets the value of 94, and lastIdUsed is now 95.
-
-• Thread 1 gets the value of 94, thread 2 gets the value of 94, and lastIdUsed is now 94.
+- Thread 1 gets the value of 94, thread 2 gets the value of 95, and lastIdUsed is now 95.
+- Thread 1 gets the value of 95, thread 2 gets the value of 94, and lastIdUsed is now 95.
+- Thread 1 gets the value of 94, thread 2 gets the value of 94, and lastIdUsed is now 94.
 
 The final result, while surprising, is possible. To see how these different results are possible, we need to understand the number of possible paths of execution and how the Java Virtual Machine executes them.
 
@@ -200,7 +194,7 @@ To calculate the number of possible execution paths, we’ll start with the gene
 
 For this simple case of N instructions in a sequence, no looping or conditionals, and T threads, the total number of possible execution paths is equal to
 
-Image
+![](figures/apA/322equ01.jpg)
 
 Calculating the Possible Orderings
 
@@ -255,17 +249,17 @@ What about the pre-increment operator, ++, on line 9? The pre-increment operator
 
 Before we go any further, here are three definitions that will be important:
 
-• Frame—Every method invocation requires a frame. The frame includes the return address, any parameters passed into the method and the local variables defined in the method. This is a standard technique used to define a call stack, which is used by modern languages to allow for basic function/method invocation and to allow for recursive invocation.
+- Frame—Every method invocation requires a frame. The frame includes the return address, any parameters passed into the method and the local variables defined in the method. This is a standard technique used to define a call stack, which is used by modern languages to allow for basic function/method invocation and to allow for recursive invocation.
 
-• Local variable—Any variables defined in the scope of the method. All nonstatic methods have at least one variable, this, which represents the current object, the object that received the most recent message (in the current thread), which caused the method invocation.
+- Local variable—Any variables defined in the scope of the method. All nonstatic methods have at least one variable, this, which represents the current object, the object that received the most recent message (in the current thread), which caused the method invocation.
 
-• Operand stack—Many of the instructions in the Java Virtual Machine take parameters. The operand stack is where those parameters are put. The stack is a standard last-in, first-out (LIFO) data structure.
+- Operand stack—Many of the instructions in the Java Virtual Machine take parameters. The operand stack is where those parameters are put. The stack is a standard last-in, first-out (LIFO) data structure.
 
 Here is the byte-code generated for resetId():
 
-Image
+![](figures/apA/0324tab01.jpg)
 
-Image
+![](figures/apA/0325tab01.jpg)
 
 These three instructions are guaranteed to be atomic because, although the thread executing them could be interrupted after any one of them, the information for the PUTFIELD instruction (the constant value 0 on the top of the stack and the reference to this one below the top, along with the field value) cannot be touched by another thread. So when the assignment occurs, we are guaranteed that the value 0 will be stored in the field value. The operation is atomic. The operands all deal with information local to the method, so there is no interference between multiple threads.
 
@@ -273,7 +267,7 @@ So if these three instructions are executed by ten threads, there are 4.38679733
 
 With the ++ operation in the getNextId method, there are going to be problems. Assume that lastId holds 42 at the beginning of this method. Here is the byte-code for this new method:
 
-Image
+![](figures/apA/0325tab02.jpg)
 
 Imagine the case where the first thread completes the first three instructions, up to and including GETFIELD, and then it is interrupted. A second thread takes over and performs the entire method, incrementing lastId by one; it gets 43 back. Then the first thread picks up where it left off; 42 is still on the operand stack because that was the value of lastId when it executed GETFIELD. It adds one to get 43 again and stores the result. The value 43 is returned to the first thread as well. The result is that one of the increments is lost because the first thread stepped on the second thread after the second thread interrupted the first thread.
 
@@ -284,11 +278,9 @@ An intimate understanding of byte-code is not necessary to understand how thread
 
 That being said, what this trivial example demonstrates is a need to understand the memory model enough to know what is and is not safe. It is a common misconception that the ++ (pre- or post-increment) operator is atomic, and it clearly is not. This means you need to know:
 
-• Where there are shared objects/values
-
-• The code that can cause concurrent read/update issues
-
-• How to guard such concurrent issues from happening
+- Where there are shared objects/values
+- The code that can cause concurrent read/update issues
+- How to guard such concurrent issues from happening
 
 KNOWING YOUR LIBRARY
 Executor Framework
@@ -371,13 +363,10 @@ When a method attempts to update a shared variable, the CAS operation verifies t
 Nonthread-Safe Classes
 There are some classes that are inherently not thread safe. Here are a few examples:
 
-• SimpleDateFormat
-
-• Database Connections
-
-• Containers in java.util
-
-• Servlets
+- SimpleDateFormat
+- Database Connections
+- Containers in java.util
+- Servlets
 
 Note that some collection classes have individual methods that are thread-safe. However, any operation that involves calling more than one method is not. For example, if you do not want to replace something in a HashTable because it is already there, you might write the following code:
 ```java
@@ -387,14 +376,14 @@ Note that some collection classes have individual methods that are thread-safe. 
 ```
 Each individual method is thread-safe. However, another thread might add a value in between the containsKey and put calls. There are several options to fix this problem.
 
-• Lock the HashTable first, and make sure all other users of the HashTable do the same—client-based locking:
+- Lock the HashTable first, and make sure all other users of the HashTable do the same—client-based locking:
 ```java
    synchronized(map) {
    if(!map.conainsKey(key))
        map.put(key, value);
    }
 ```
-• Wrap the HashTable in its own object and use a different API—server-based locking using an ADAPTER:
+- Wrap the HashTable in its own object and use a different API—server-based locking using an ADAPTER:
 ```java
    public class WrappedHashtable<K, V> {
        private Map<K, V> map = new Hashtable<K, V>();
@@ -405,7 +394,7 @@ Each individual method is thread-safe. However, another thread might add a value
        }
    }
 ```
-• Use the thread-safe collections:
+- Use the thread-safe collections:
 ```java
    ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<Integer,
    String>();
@@ -448,11 +437,9 @@ This is a real problem and an example of the kinds of problems that crop up in c
 
 You have three options:
 
-• Tolerate the failure.
-
-• Solve the problem by changing the client: client-based locking
-
-• Solve the problem by changing the server, which additionally changes the client: server-based locking
+- Tolerate the failure.
+- Solve the problem by changing the client: client-based locking
+- Solve the problem by changing the server, which additionally changes the client: server-based locking
 
 Tolerate the Failure
 Sometimes you can set things up such that the failure causes no harm. For example, the above client could catch the exception and clean up. Frankly, this is a bit sloppy. It’s rather like cleaning up memory leaks by rebooting at midnight.
@@ -522,19 +509,15 @@ In this case we actually change the API of our class to be multithread aware.3 T
 
 In general you should prefer server-based locking for these reasons:
 
-• It reduces repeated code—Client-based locking forces each client to lock the server properly. By putting the locking code into the server, clients are free to use the object and not worry about writing additional locking code.
-
-• It allows for better performance—You can swap out a thread-safe server for a non-thread safe one in the case of single-threaded deployment, thereby avoiding all overhead.
-
-• It reduces the possibility of error—All it takes is for one programmer to forget to lock properly.
-
-• It enforces a single policy—The policy is in one place, the server, rather than many places, each client.
-
-• It reduces the scope of the shared variables—The client is not aware of them or how they are locked. All of that is hidden in the server. When things break, the number of places to look is smaller.
+- It reduces repeated code—Client-based locking forces each client to lock the server properly. By putting the locking code into the server, clients are free to use the object and not worry about writing additional locking code.
+- It allows for better performance—You can swap out a thread-safe server for a non-thread safe one in the case of single-threaded deployment, thereby avoiding all overhead.
+- It reduces the possibility of error—All it takes is for one programmer to forget to lock properly.
+- It enforces a single policy—The policy is in one place, the server, rather than many places, each client.
+- It reduces the scope of the shared variables—The client is not aware of them or how they are locked. All of that is hidden in the server. When things break, the number of places to look is smaller.
 
 What if you do not own the server code?
 
-• Use an ADAPTER to change the API and add locking
+- Use an ADAPTER to change the API and add locking
 ```java
    public class ThreadSafeIntegerIterator {
        private IntegerIterator iterator = new IntegerIterator();
@@ -546,7 +529,7 @@ What if you do not own the server code?
        }
    }
 ```
-• OR better yet, use the thread-safe collections with extended interfaces
+- OR better yet, use the thread-safe collections with extended interfaces
 
 INCREASING THROUGHPUT
 Let’s assume that we want to go out on the net and read the contents of a set of pages from a list of URLs. As each page is read, we will parse it to accumulate some statistics. Once all the pages are read, we will print a summary report.
@@ -600,18 +583,16 @@ Notice that we’ve kept the synchronized block very small. It contains just the
 Single-Thread Calculation of Throughput
 Now lets do some simple calculations. For the purpose of argument, assume the following:
 
-• I/O time to retrieve a page (average): 1 second
-
-• Processing time to parse page (average): .5 seconds
-
-• I/O requires 0 percent of the CPU while processing requires 100 percent.
+- I/O time to retrieve a page (average): 1 second
+- Processing time to parse page (average): .5 seconds
+- I/O requires 0 percent of the CPU while processing requires 100 percent.
 
 For N pages being processed by a single thread, the total execution time is 1.5 seconds * N. Figure A-1 shows a snapshot of 13 pages or about 19.5 seconds.
 
 
 Figure A-1 Single thread
 
-Image
+![](figures/apA/x01-1single_thread.jpg)
 
 Multithread Calculation of Throughput
 If it is possible to retrieve pages in any order and process the pages independently, then it is possible to use multiple threads to increase throughput. What happens if we use three threads? How many pages can we acquire in the same time?
@@ -621,30 +602,25 @@ As you can see in Figure A-2, the multithreaded solution allows the process-boun
 
 Figure A-2 Three concurrent threads
 
-Image
+![](figures/apA/x01-2multi_thread.jpg)
 
 DEADLOCK
 Imagine a Web application with two shared resource pools of some finite size:
 
-• A pool of database connections for local work in process storage
-
-• A pool of MQ connections to a master repository
+- A pool of database connections for local work in process storage
+- A pool of MQ connections to a master repository
 
 Assume there are two operations in this application, create and update:
 
-• Create—Acquire connection to master repository and database. Talk to service master repository and then store work in local work in process database.
-
-• Update—Acquire connection to database and then master repository. Read from work in process database and then send to the master repository
+- Create—Acquire connection to master repository and database. Talk to service master repository and then store work in local work in process database.
+- Update—Acquire connection to database and then master repository. Read from work in process database and then send to the master repository
 
 What happens when there are more users than the pool sizes? Consider each pool has a size of ten.
 
-• Ten users attempt to use create, so all ten database connections are acquired, and each thread is interrupted after acquiring a database connection but before acquiring a connection to the master repository.
-
-• Ten users attempt to use update, so all ten master repository connections are acquired, and each thread is interrupted after acquiring the master repository but before acquiring a database connection.
-
-• Now the ten “create” threads must wait to acquire a master repository connection, but the ten “update” threads must wait to acquire a database connection.
-
-• Deadlock. The system never recovers.
+- Ten users attempt to use create, so all ten database connections are acquired, and each thread is interrupted after acquiring a database connection but before acquiring a connection to the master repository.
+- Ten users attempt to use update, so all ten master repository connections are acquired, and each thread is interrupted after acquiring the master repository but before acquiring a database connection.
+- Now the ten “create” threads must wait to acquire a master repository connection, but the ten “update” threads must wait to acquire a database connection.
+- Deadlock. The system never recovers.
 
 This might sound like an unlikely situation, but who wants a system that freezes solid every other week? Who wants to debug a system with symptoms that are so difficult to reproduce? This is the kind of problem that happens in the field, then takes weeks to solve.
 
@@ -654,20 +630,16 @@ A typical “solution” is to introduce debugging statements to find out what i
 
 To really solve the problem of deadlock, we need to understand what causes it. There are four conditions required for deadlock to occur:
 
-• Mutual exclusion
-
-• Lock & wait
-
-• No preemption
-
-• Circular wait
+- Mutual exclusion
+- Lock & wait
+- No preemption
+- Circular wait
 
 Mutual Exclusion
 Mutual exclusion occurs when multiple threads need to use the same resources and those resources
 
-• Cannot be used by multiple threads at the same time.
-
-• Are limited in number.
+- Cannot be used by multiple threads at the same time.
+- Are limited in number.
 
 A common example of such a resource is a database connection, a file open for write, a record lock, or a semaphore.
 
@@ -683,18 +655,16 @@ This is also referred to as the deadly embrace. Imagine two threads, T1 and T2, 
 
 Figure A-3
 
-Image
+![](figures/apA/x01-3breaking_cycle.jpg)
 
 All four of these conditions must hold for deadlock to be possible. Break any one of these conditions and deadlock is not possible.
 
 Breaking Mutual Exclusion
 One strategy for avoiding deadlock is to sidestep the mutual exclusion condition. You might be able to do this by
 
-• Using resources that allow simultaneous use, for example, AtomicInteger.
-
-• Increasing the number of resources such that it equals or exceeds the number of competing threads.
-
-• Checking that all your resources are free before seizing any.
+- Using resources that allow simultaneous use, for example, AtomicInteger.
+- Increasing the number of resources such that it equals or exceeds the number of competing threads.
+- Checking that all your resources are free before seizing any.
 
 Unfortunately, most resources are limited in number and don’t allow simultaneous use. And it’s not uncommon for the identity of the second resource to be predicated on the results of operating on the first. But don’t be discouraged; there are three conditions left.
 
@@ -703,9 +673,8 @@ You can also eliminate deadlock if you refuse to wait. Check each resource befor
 
 This approach introduces several potential problems:
 
-• Starvation—One thread keeps being unable to acquire the resources it needs (maybe it has a unique combination of resources that seldom all become available).
-
-• Livelock—Several threads might get into lockstep and all acquire one resource and then release one resource, over and over again. This is especially likely with simplistic CPU scheduling algorithms (think embedded devices or simplistic hand-written thread balancing algorithms).
+- Starvation—One thread keeps being unable to acquire the resources it needs (maybe it has a unique combination of resources that seldom all become available).
+- Livelock—Several threads might get into lockstep and all acquire one resource and then release one resource, over and over again. This is especially likely with simplistic CPU scheduling algorithms (think embedded devices or simplistic hand-written thread balancing algorithms).
 
 Both of these can cause poor throughput. The first results in low CPU utilization, whereas the second results in high and useless CPU utilization.
 
@@ -723,9 +692,8 @@ In the example above with Thread 1 wanting both Resource 1 and Resource 2 and Th
 
 More generally, if all threads can agree on a global ordering of resources and if they all allocate resources in that order, then deadlock is impossible. Like all the other strategies, this can cause problems:
 
-• The order of acquisition might not correspond to the order of use; thus a resource acquired at the start might not be used until the end. This can cause resources to be locked longer than strictly necessary.
-
-• Sometimes you cannot impose an order on the acquisition of resources. If the ID of the second resource comes from an operation performed on the first, then ordering is not feasible.
+- The order of acquisition might not correspond to the order of use; thus a resource acquired at the start might not be used until the end. This can cause resources to be locked longer than strictly necessary.
+- Sometimes you cannot impose an order on the acquisition of resources. If the ID of the second resource comes from an operation performed on the first, then ordering is not feasible.
 
 So there are many ways to avoid deadlock. Some lead to starvation, whereas others make heavy use of the CPU and reduce responsiveness. TANSTAAFL!5
 
@@ -746,13 +714,10 @@ How can we write a test to demonstrate the following code is broken?
 ```
 Here’s a description of a test that will prove the code is broken:
 
-• Remember the current value of nextId.
-
-• Create two threads, both of which call takeNextId() once.
-
-• Verify that nextId is two more than what we started with.
-
-• Run this until we demonstrate that nextId was only incremented by one instead of two.
+- Remember the current value of nextId.
+- Create two threads, both of which call takeNextId() once.
+- Verify that nextId is two more than what we started with.
+- Run this until we demonstrate that nextId was only incremented by one instead of two.
 
 Listing A-2 shows such a test:
 
@@ -798,9 +763,9 @@ Listing A-2 ClassWithThreadingProblemTest.java
    36:     }
    37: }
 ```
-Image
+![](figures/apA/0340tab01.jpg)
 
-Image
+![](figures/apA/0341tab01.jpg)
 
 This test certainly sets up the conditions for a concurrent update problem. However, the problem occurs so infrequently that the vast majority of times this test won’t detect it.
 
@@ -814,15 +779,15 @@ So what approaches can we take to demonstrate this simple failure? And, more imp
 
 Here are a few ideas:
 
-• Monte Carlo Testing. Make tests flexible, so they can be tuned. Then run the test over and over—say on a test server—randomly changing the tuning values. If the tests ever fail, the code is broken. Make sure to start writing those tests early so a continuous integration server starts running them soon. By the way, make sure you carefully log the conditions under which the test failed.
+- Monte Carlo Testing. Make tests flexible, so they can be tuned. Then run the test over and over—say on a test server—randomly changing the tuning values. If the tests ever fail, the code is broken. Make sure to start writing those tests early so a continuous integration server starts running them soon. By the way, make sure you carefully log the conditions under which the test failed.
 
-• Run the test on every one of the target deployment platforms. Repeatedly. Continuously. The longer the tests run without failure, the more likely that
+- Run the test on every one of the target deployment platforms. Repeatedly. Continuously. The longer the tests run without failure, the more likely that
 
 – The production code is correct or
 
 – The tests aren’t adequate to expose problems.
 
-• Run the tests on a machine with varying loads. If you can simulate loads close to a production environment, do so.
+- Run the tests on a machine with varying loads. If you can simulate loads close to a production environment, do so.
 
 Yet, even if you do all of these things, you still don’t stand a very good chance of finding threading problems with your code. The most insidious problems are the ones that have such a small cross section that they only occur once in a billion opportunities. Such problems are the terror of complex systems.
 
@@ -835,11 +800,9 @@ We do not have any direct relationship with IBM or the team that developed ConTe
 
 Here’s an outline of how to use ConTest:
 
-• Write tests and production code, making sure there are tests specifically designed to simulate multiple users under varying loads, as mentioned above.
-
-• Instrument test and production code with ConTest.
-
-• Run the tests.
+- Write tests and production code, making sure there are tests specifically designed to simulate multiple users under varying loads, as mentioned above.
+- Instrument test and production code with ConTest.
+- Run the tests.
 
 When we instrumented code with ConTest, our success rate went from roughly one failure in ten million iterations to roughly one failure in thirty iterations. Here are the loop values for several runs of the test after instrumentation: 13, 23, 0, 54, 16, 14, 6, 69, 107, 49, 2. So clearly the instrumented classes failed much earlier and with much greater reliability.
 

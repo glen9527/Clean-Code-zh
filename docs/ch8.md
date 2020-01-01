@@ -1,9 +1,8 @@
 # 第 8 章 Boundaries
-Image
 
 by James Grenning
 
-Image
+![](figures/ch8/113fig01.jpg)
 
 We seldom control all the software in our systems. Sometimes we buy third-party packages or use open source. Other times we depend on teams in our own company to produce components or subsystems for us. Somehow we must cleanly integrate this foreign code with our own. In this chapter we look at practices and techniques to keep the boundaries of our software clean.
 
@@ -15,7 +14,7 @@ Let’s look at java.util.Map as an example. As you can see by examining Figure 
 
 Figure 8-1 The methods of Map
 
-Image
+![](figures/ch8/114fig01.jpg)
 
 If our application needs a Map of Sensors, you might find the sensors set up like this:
 ```java
@@ -168,7 +167,7 @@ In Figure 8-2, you can see that we insulated the CommunicationsController classe
 
 Figure 8-2 Predicting the transmitter
 
-Image
+![](figures/ch8/119fig01.jpg)
 
 This design also gives us a very convenient seam3 in the code for testing. Using a suitable FakeTransmitter, we can test the CommunicationsController classes. We can also create boundary tests once we have the TransmitterAPI that make sure we are using the API correctly.
 

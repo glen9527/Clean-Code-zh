@@ -1,7 +1,6 @@
 # 第 5 章 Formatting
-Image
 
-Image
+![](figures/ch5/5_1fig_martin.jpg)
 
 When people look under the hood, we want them to be impressed with the neatness, consistency, and attention to detail that they perceive. We want them to be struck by the orderliness. We want their eyebrows to rise as they scroll through the modules. We want them to perceive that professionals have been at work. If instead they see a scrambled mass of code that looks like it was written by a bevy of drunken sailors, then they are likely to conclude that the same inattention to detail pervades every other aspect of the project.
 
@@ -26,7 +25,7 @@ Seven different projects are depicted. Junit, FitNesse, testNG, Time and Money, 
 
 Figure 5-1 File length distributions LOG scale (box height = sigma)
 
-Image
+![](figures/ch5/5_2fig_martin.jpg)
 
 Junit, FitNesse, and Time and Money are composed of relatively small files. None are over 500 lines and most of those files are less than 200 lines. Tomcat and Ant, on the other hand, have some files that are several thousand lines long and close to half are over 200 lines.
 
@@ -292,7 +291,7 @@ Conceptual Affinity. Certain bits of code want to be near other bits. They have 
 
 As we have seen, this affinity might be based on a direct dependence, such as one function calling another, or a function using a variable. But there are other possible causes of affinity. Affinity might be caused because a group of functions perform a similar operation. Consider this snippet of code from Junit 4.3.1:
 
-Image
+![](figures/ch5/5_3fig_martin.jpg)
 ```java
    public class Assert {
      static public void assertTrue(String message, boolean condition) {
@@ -328,7 +327,7 @@ How wide should a line be? To answer that, let’s look at how wide lines are in
 
 Figure 5-2 Java line width distribution
 
-Image
+![](figures/ch5/5_4fig_martin.jpg)
 
 This suggests that we should strive to keep our lines short. The old Hollerith limit of 80 is a bit arbitrary, and I’m not opposed to lines edging out to 100 or even 120. But beyond that is probably just careless.
 
@@ -506,7 +505,7 @@ The title of this section is a play on words. Every programmer has his own favor
 
 A team of developers should agree upon a single formatting style, and then every member of that team should use that style. We want the software to have a consistent style. We don’t want it to appear to have been written by a bunch of disagreeing individuals.
 
-Image
+![](figures/ch5/5_5fig_martin.jpg)
 
 When I started the FitNesse project back in 2002, I sat down with the team to work out a coding style. This took about 10 minutes. We decided where we’d put our braces, what our indent size would be, how we would name classes, variables, and methods, and so forth. Then we encoded those rules into the code formatter of our IDE and have stuck with them ever since. These were not the rules that I prefer; they were rules decided by the team. As a member of that team I followed them when writing code in the FitNesse project.
 

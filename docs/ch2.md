@@ -1,17 +1,19 @@
 # 第 2 章 Meaningful Names
-by Tim Ottinger
-Image
 
-INTRODUCTION
+![](figures/ch2/2_1fig_martin.jpg)
+
+by Tim Ottinger
+
+## INTRODUCTION
 Names are everywhere in software. We name our variables, our functions, our arguments, classes, and packages. We name our source files and the directories that contain them. We name our jar files and war files and ear files. We name and name and name. Because we do so much of it, we’d better do it well. What follows are some simple rules for creating good names.
 
-USE INTENTION-REVEALING NAMES
+## USE INTENTION-REVEALING NAMES
 It is easy to say that names should reveal intent. What we want to impress upon you is that we are serious about this. Choosing good names takes time but saves more than it takes. So take care with your names and change them when you find better ones. Everyone who reads your code (including you) will be happier if you do.
 
 The name of a variable, function, or class, should answer all the big questions. It should tell you why it exists, what it does, and how it is used. If a name requires a comment, then the name does not reveal its intent.
 ```java
    int d; // elapsed time in days
-
+```
 The name d reveals nothing. It does not evoke a sense of elapsed time, nor of days. We should choose a name that specifies what is being measured and the unit of that measurement:
 ```java
    int elapsedTimeInDays;
@@ -34,11 +36,8 @@ Why is it hard to tell what this code is doing? There are no complex expressions
 The problem isn’t the simplicity of the code but the implicity of the code (to coin a phrase): the degree to which the context is not explicit in the code itself. The code implicitly requires that we know the answers to questions such as:
 
 1. What kinds of things are in theList?
-
 2. What is the significance of the zeroth subscript of an item in theList?
-
 3. What is the significance of the value 4?
-
 4. How would I use the list being returned?
 
 The answers to these questions are not present in the code sample, but they could have been. Say that we’re working in a mine sweeper game. We find that the board is a list of cells called theList. Let’s rename that to gameBoard.
@@ -67,7 +66,7 @@ We can go further and write a simple class for cells instead of using an array o
 ```
 With these simple name changes, it’s not difficult to understand what’s going on. This is the power of choosing good names.
 
-AVOID DISINFORMATION
+## AVOID DISINFORMATION
 Programmers must avoid leaving false clues that obscure the meaning of code. We should avoid words whose entrenched meanings vary from our intended meaning. For example, hp, aix, and sco would be poor variable names because they are the names of Unix platforms or variants. Even if you are coding a hypotenuse and hp looks like a good abbreviation, it could be disinformative.
 
 Do not refer to a grouping of accounts as an accountList unless it’s actually a List. The word list means something specific to programmers. If the container holding the accounts is not actually a List, it may lead to false conclusions.1 So accountGroup or bunchOfAccounts or just plain accounts would be better.
@@ -88,8 +87,8 @@ A truly awful example of disinformative names would be the use of lower-case L o
 ```
 The reader may think this a contrivance, but we have examined code where such things were abundant. In one case the author of the code suggested using a different font so that the differences were more obvious, a solution that would have to be passed down to all future developers as oral tradition or in a written document. The problem is conquered with finality and without creating new work products by a simple renaming.
 
-MAKE MEANINGFUL DISTINCTIONS
-Image
+## MAKE MEANINGFUL DISTINCTIONS
+![](figures/ch2/2_2fig_martin.jpg)
 
 Programmers create problems for themselves when they write code solely to satisfy a compiler or interpreter. For example, because you can’t use the same name to refer to two different things in the same scope, you might be tempted to change one name in an arbitrary way. Sometimes this is done by misspelling one, leading to the surprising situation where correcting spelling errors leads to an inability to compile.2
 
@@ -125,7 +124,7 @@ How are the programmers in this project supposed to know which of these function
 
 In the absence of specific conventions, the variable moneyAmount is indistinguishable from money, customerInfo is indistinguishable from customer, accountData is indistinguishable from account, and theMessage is indistinguishable from message. Distinguish names in such a way that the reader knows what the differences offer.
 
-USE PRONOUNCEABLE NAMES
+## USE PRONOUNCEABLE NAMES
 Humans are good at words. A significant part of our brains is dedicated to the concept of words. And words are, by definition, pronounceable. It would be a shame not to take advantage of that huge portion of our brains that has evolved to deal with spoken language. So make your names pronounceable.
 
 If you can’t pronounce it, you can’t discuss it without sounding like an idiot. “Well, over here on the bee cee arr three cee enn tee we have a pee ess zee kyew int, see?” This matters because programming is a social activity.
@@ -150,7 +149,7 @@ to
 ```
 Intelligent conversation is now possible: “Hey, Mikey, take a look at this record! The generation timestamp is set to tomorrow’s date! How can that be?”
 
-USE SEARCHABLE NAMES
+## USE SEARCHABLE NAMES
 Single-letter names and numeric constants have a particular problem in that they are not easy to locate across a body of text.
 
 One might easily grep for MAX_CLASSES_PER_STUDENT, but the number 7 could be more troublesome. Searches may turn up the digit as part of file names, other constant definitions, and in various expressions where the value is used with different intent. It is even worse when a constant is a long number and someone might have transposed digits, thereby creating a bug while simultaneously evading the programmer’s search.
@@ -176,10 +175,10 @@ to
 ```
 Note that sum, above, is not a particularly useful name but at least is searchable. The intentionally named code makes for a longer function, but consider how much easier it will be to find WORK_DAYS_PER_WEEK than to find all the places where 5 was used and filter the list down to just the instances with the intended meaning.
 
-AVOID ENCODINGS
+## AVOID ENCODINGS
 We have enough encodings to deal with without adding more to our burden. Encoding type or scope information into names simply adds an extra burden of deciphering. It hardly seems reasonable to require each new employee to learn yet another encoding “language” in addition to learning the (usually considerable) body of code that they’ll be working in. It is an unnecessary mental burden when trying to solve a problem. Encoded names are seldom pronounceable and are easy to mis-type.
 
-Hungarian Notation
+## Hungarian Notation
 In days of old, when we worked in name-length-challenged languages, we violated this rule out of necessity, and with regret. Fortran forced encodings by making the first letter a code for the type. Early versions of BASIC allowed only a letter plus one digit. Hungarian Notation (HN) took this to a whole new level.
 
 HN was considered to be pretty important back in the Windows C API, when everything was an integer handle or a long pointer or a void pointer, or one of several implementations of “string” (with different uses and attributes). The compiler did not check types in those days, so the programmers needed a crutch to help them remember the types.
@@ -191,7 +190,7 @@ Java programmers don’t need type encoding. Objects are strongly typed, and edi
    PhoneNumber phoneString;
    // name not changed when type changed!
 ```
-Member Prefixes
+## Member Prefixes
 You also don’t need to prefix member variables with m_ anymore. Your classes and functions should be small enough that you don’t need them. And you should be using an editing environment that highlights or colorizes members to make them distinct.
 ```java
    public class Part {
@@ -210,10 +209,10 @@ You also don’t need to prefix member variables with m_ anymore. Your classes a
 ```
 Besides, people quickly learn to ignore the prefix (or suffix) to see the meaningful part of the name. The more we read the code, the less we see the prefixes. Eventually the prefixes become unseen clutter and a marker of older code.
 
-Interfaces and Implementations
+## Interfaces and Implementations
 These are sometimes a special case for encodings. For example, say you are building an ABSTRACT FACTORY for the creation of shapes. This factory will be an interface and will be implemented by a concrete class. What should you name them? IShapeFactory and ShapeFactory? I prefer to leave interfaces unadorned. The preceding I, so common in today’s legacy wads, is a distraction at best and too much information at worst. I don’t want my users knowing that I’m handing them an interface. I just want them to know that it’s a ShapeFactory. So if I must encode either the interface or the implementation, I choose the implementation. Calling it ShapeFactoryImp, or even the hideous CShapeFactory, is preferable to encoding the interface.
 
-AVOID MENTAL MAPPING
+## AVOID MENTAL MAPPING
 Readers shouldn’t have to mentally translate your names into other names they already know. This problem generally arises from a choice to use neither problem domain terms nor solution domain terms.
 
 This is a problem with single-letter variable names. Certainly a loop counter may be named i or j or k (though never l!) if its scope is very small and no other names can conflict with it. This is because those single-letter names for loop counters are traditional. However, in most other contexts a single-letter name is a poor choice; it’s just a place holder that the reader must mentally map to the actual concept. There can be no worse reason for using the name c than because a and b were already taken.
@@ -222,10 +221,10 @@ In general programmers are pretty smart people. Smart people sometimes like to s
 
 One difference between a smart programmer and a professional programmer is that the professional understands that clarity is king. Professionals use their powers for good and write code that others can understand.
 
-CLASS NAMES
+## CLASS NAMES
 Classes and objects should have noun or noun phrase names like Customer, WikiPage, Account, and AddressParser. Avoid words like Manager, Processor, Data, or Info in the name of a class. A class name should not be a verb.
 
-METHOD NAMES
+## METHOD NAMES
 Methods should have verb or verb phrase names like postPayment, deletePage, or save. Accessors, mutators, and predicates should be named for their value and prefixed with get, set, and is according to the javabean standard.4
 
 4. http://java.sun.com/products/javabeans/docs/spec.html
@@ -244,16 +243,16 @@ is generally better than
 ```
 Consider enforcing their use by making the corresponding constructors private.
 
-DON’T BE CUTE
+## DON’T BE CUTE
 If names are too clever, they will be memorable only to people who share the author’s sense of humor, and only as long as these people remember the joke. Will they know what the function named HolyHandGrenade is supposed to do? Sure, it’s cute, but maybe in this case DeleteItems might be a better name. Choose clarity over entertainment value.
 
-Image
+![](figures/ch2/2_3fig_martin.jpg)
 
 Cuteness in code often appears in the form of colloquialisms or slang. For example, don’t use the name whack() to mean kill(). Don’t tell little culture-dependent jokes like eatMyShorts() to mean abort().
 
 Say what you mean. Mean what you say.
 
-PICK ONE WORD PER CONCEPT
+## PICK ONE WORD PER CONCEPT
 Pick one word for one abstract concept and stick with it. For instance, it’s confusing to have fetch, retrieve, and get as equivalent methods of different classes. How do you remember which method name goes with which class? Sadly, you often have to remember which company, group, or individual wrote the library or class in order to remember which term was used. Otherwise, you spend an awful lot of time browsing through headers and previous code samples.
 
 Modern editing environments like Eclipse and IntelliJ provide context-sensitive clues, such as the list of methods you can call on a given object. But note that the list doesn’t usually give you the comments you wrote around your function names and parameter lists. You are lucky if it gives the parameter names from function declarations. The function names have to stand alone, and they have to be consistent in order for you to pick the correct method without any additional exploration.
@@ -262,7 +261,7 @@ Likewise, it’s confusing to have a controller and a manager and a driver in th
 
 A consistent lexicon is a great boon to the programmers who must use your code.
 
-DON’T PUN
+## DON’T PUN
 Avoid using the same word for two purposes. Using the same term for two different ideas is essentially a pun.
 
 If you follow the “one word per concept” rule, you could end up with many classes that have, for example, an add method. As long as the parameter lists and return values of the various add methods are semantically equivalent, all is well.
@@ -271,17 +270,17 @@ However one might decide to use the word add for “consistency” when he or sh
 
 Our goal, as authors, is to make our code as easy as possible to understand. We want our code to be a quick skim, not an intense study. We want to use the popular paperback model whereby the author is responsible for making himself clear and not the academic model where it is the scholar’s job to dig the meaning out of the paper.
 
-USE SOLUTION DOMAIN NAMES
+## USE SOLUTION DOMAIN NAMES
 Remember that the people who read your code will be programmers. So go ahead and use computer science (CS) terms, algorithm names, pattern names, math terms, and so forth. It is not wise to draw every name from the problem domain because we don’t want our coworkers to have to run back and forth to the customer asking what every name means when they already know the concept by a different name.
 
 The name AccountVisitor means a great deal to a programmer who is familiar with the VISITOR pattern. What programmer would not know what a JobQueue was? There are lots of very technical things that programmers have to do. Choosing technical names for those things is usually the most appropriate course.
 
-USE PROBLEM DOMAIN NAMES
+## USE PROBLEM DOMAIN NAMES
 When there is no “programmer-eese” for what you’re doing, use the name from the problem domain. At least the programmer who maintains your code can ask a domain expert what it means.
 
 Separating solution and problem domain concepts is part of the job of a good programmer and designer. The code that has more to do with problem domain concepts should have names drawn from the problem domain.
 
-ADD MEANINGFUL CONTEXT
+## ADD MEANINGFUL CONTEXT
 There are a few names which are meaningful in and of themselves—most are not. Instead, you need to place names in context for your reader by enclosing them in well-named classes, functions, or namespaces. When all else fails, then prefixing the name may be necessary as a last resort.
 
 Imagine that you have variables named firstName, lastName, street, houseNumber, city, state, and zipcode. Taken together it’s pretty clear that they form an address. But what if you just saw the state variable being used alone in a method? Would you automatically infer that it was part of an address?
@@ -361,7 +360,7 @@ Listing 2-2 Variables have a context.
      }
    }
 ```
-DON’T ADD GRATUITOUS CONTEXT
+## DON’T ADD GRATUITOUS CONTEXT
 In an imaginary application called “Gas Station Deluxe,” it is a bad idea to prefix every class with GSD. Frankly, you are working against your tools. You type G and press the completion key and are rewarded with a mile-long list of every class in the system. Is that wise? Why make it hard for the IDE to help you?
 
 Likewise, say you invented a MailingAddress class in GSD’s accounting module, and you named it GSDAccountAddress. Later, you need a mailing address for your customer contact application. Do you use GSDAccountAddress? Does it sound like the right name? Ten of 17 characters are redundant or irrelevant.
@@ -370,7 +369,7 @@ Shorter names are generally better than longer ones, so long as they are clear. 
 
 The names accountAddress and customerAddress are fine names for instances of the class Address but could be poor names for classes. Address is a fine name for a class. If I need to differentiate between MAC addresses, port addresses, and Web addresses, I might consider PostalAddress, MAC, and URI. The resulting names are more precise, which is the point of all naming.
 
-FINAL WORDS
+## FINAL WORDS
 The hardest thing about choosing good names is that it requires good descriptive skills and a shared cultural background. This is a teaching issue rather than a technical, business, or management issue. As a result many people in this field don’t learn to do it very well.
 
 People are also afraid of renaming things for fear that some other developers will object. We do not share that fear and find that we are actually grateful when names change (for the better). Most of the time we don’t really memorize the names of classes and methods. We use the modern tools to deal with details like that so we can focus on whether the code reads like paragraphs and sentences, or at least like tables and data structure (a sentence isn’t always the best way to display data). You will probably end up surprising someone when you rename, just like you might with any other code improvement. Don’t let it stop you in your tracks.

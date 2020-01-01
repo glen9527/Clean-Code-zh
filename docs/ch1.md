@@ -1,13 +1,12 @@
 # 第 1 章 Clean Code
-Image
 
-Image
+![](figures/ch1/1-1fig_martin.jpg)
 
 You are reading this book for two reasons. First, you are a programmer. Second, you want to be a better programmer. Good. We need better programmers.
 
 This is a book about good programming. It is filled with code. We are going to look at code from every different direction. We’ll look down at it from the top, up at it from the bottom, and through it from the inside out. By the time we are done, we’re going to know a lot about code. What’s more, we’ll be able to tell the difference between good code and bad code. We’ll know how to write good code. And we’ll know how to transform bad code into good code.
 
-THERE WILL BE CODE
+## THERE WILL BE CODE
 One might argue that a book about code is somehow behind the times—that code is no longer the issue; that we should be concerned about models and requirements instead. Indeed some have suggested that we are close to the end of code. That soon all code will be generated instead of written. That programmers simply won’t be needed because business people will generate programs from specifications.
 
 Nonsense! We will never be rid of code, because code represents the details of the requirements. At some level those details cannot be ignored or abstracted; they have to be specified. And specifying requirements in such detail that a machine can execute them is programming. Such a specification is code.
@@ -20,14 +19,14 @@ This will never happen. Not even humans, with all their intuition and creativity
 
 Remember that code is really the language in which we ultimately express the requirements. We may create languages that are closer to the requirements. We may create tools that help us parse and assemble those requirements into formal structures. But we will never eliminate necessary precision—so there will always be code.
 
-BAD CODE
+## BAD CODE
 I was recently reading the preface to Kent Beck’s book Implementation Patterns.1 He says, “… this book is based on a rather fragile premise: that good code matters….” A fragile premise? I disagree! I think that premise is one of the most robust, supported, and overloaded of all the premises in our craft (and I think Kent knows it). We know good code matters because we’ve had to deal for so long with its lack.
 
 1. [Beck07].
 
 I know of one company that, in the late 80s, wrote a killer app. It was very popular, and lots of professionals bought and used it. But then the release cycles began to stretch. Bugs were not repaired from one release to the next. Load times grew and crashes increased. I remember the day I shut the product down in frustration and never used it again. The company went out of business a short time after that.
 
-Image
+![](figures/ch1/1-2fig_martin.jpg)
 
 Two decades later I met one of the early employees of that company and asked him what had happened. The answer confirmed my fears. They had rushed the product to market and had made a huge mess in the code. As they added more and more features, the code got worse and worse until they simply could not manage it any longer. It was the bad code that brought the company down.
 
@@ -39,7 +38,7 @@ Were you trying to go fast? Were you in a rush? Probably so. Perhaps you felt th
 
 We’ve all looked at the mess we’ve just made and then have chosen to leave it for another day. We’ve all felt the relief of seeing our messy program work and deciding that a working mess is better than nothing. We’ve all said we’d go back and clean it up later. Of course, in those days we didn’t know LeBlanc’s law: Later equals never.
 
-THE TOTAL COST OF OWNING A MESS
+## THE TOTAL COST OF OWNING A MESS
 If you have been a programmer for more than two or three years, you have probably been significantly slowed down by someone else’s messy code. If you have been a programmer for longer than two or three years, you have probably been slowed down by messy code. The degree of the slowdown can be significant. Over the span of a year or two, teams that were moving very fast at the beginning of a project can find themselves moving at a snail’s pace. Every change they make to the code breaks two or three other parts of the code. No change is trivial. Every addition or modification to the system requires that the tangles, twists, and knots be “understood” so that more tangles, twists, and knots can be added. Over time the mess becomes so big and so deep and so tall, they can not clean it up. There is no way at all.
 
 As the mess builds, the productivity of the team continues to decrease, asymptotically approaching zero. As productivity decreases, management does the only thing they can; they add more staff to the project in hopes of increasing productivity. But that new staff is not versed in the design of the system. They don’t know the difference between a change that matches the design intent and a change that thwarts the design intent. Furthermore, they, and everyone else on the team, are under horrific pressure to increase productivity. So they all make more and more messes, driving the productivity ever further toward zero. (See Figure 1-1.)
@@ -47,9 +46,9 @@ As the mess builds, the productivity of the team continues to decrease, asymptot
 
 Figure 1-1 Productivity vs. time
 
-Image
+![](figures/ch1/1-4fig_martin.jpg)
 
-The Grand Redesign in the Sky
+## The Grand Redesign in the Sky
 Eventually the team rebels. They inform management that they cannot continue to develop in this odious code base. They demand a redesign. Management does not want to expend the resources on a whole new redesign of the project, but they cannot deny that productivity is terrible. Eventually they bend to the demands of the developers and authorize the grand redesign in the sky.
 
 A new tiger team is selected. Everyone wants to be on this team because it’s a green-field project. They get to start over and create something truly beautiful. But only the best and brightest are chosen for the tiger team. Everyone else must continue to maintain the current system.
@@ -60,7 +59,7 @@ This race can go on for a very long time. I’ve seen it take 10 years. And by t
 
 If you have experienced even one small part of the story I just told, then you already know that spending time keeping your code clean is not just cost effective; it’s a matter of professional survival.
 
-Attitude
+## Attitude
 Have you ever waded through a mess so grave that it took weeks to do what should have taken hours? Have you seen what should have been a one-line change, made instead in hundreds of different modules? These symptoms are all too common.
 
 Why does this happen to code? Why does good code rot so quickly into bad code? We have lots of explanations for it. We complain that the requirements changed in ways that thwart the original design. We bemoan the schedules that were too tight to do things right. We blather about stupid managers and intolerant customers and useless marketing types and telephone sanitizers. But the fault, dear Dilbert, is not in our stars, but in ourselves. We are unprofessional.
@@ -77,12 +76,12 @@ To drive this point home, what if you were a doctor and had a patient who demand
 
 So too it is unprofessional for programmers to bend to the will of managers who don’t understand the risks of making messes.
 
-The Primal Conundrum
+## The Primal Conundrum
 Programmers face a conundrum of basic values. All developers with more than a few years experience know that previous messes slow them down. And yet all developers feel the pressure to make messes in order to meet deadlines. In short, they don’t take the time to go fast!
 
 True professionals know that the second part of the conundrum is wrong. You will not make the deadline by making the mess. Indeed, the mess will slow you down instantly, and will force you to miss the deadline. The only way to make the deadline—the only way to go fast—is to keep the code as clean as possible at all times.
 
-The Art of Clean Code?
+## The Art of Clean Code?
 Let’s say you believe that messy code is a significant impediment. Let’s say that you accept that the only way to go fast is to keep your code clean. Then you must ask yourself: “How do I write clean code?” It’s no good trying to write clean code if you don’t know what it means for code to be clean!
 
 The bad news is that writing clean code is a lot like painting a picture. Most of us know when a picture is painted well or badly. But being able to recognize good art from bad does not mean that we know how to paint. So too being able to recognize clean code from dirty code does not mean that we know how to write clean code!
@@ -93,10 +92,10 @@ A programmer without “code-sense” can look at a messy module and recognize t
 
 In short, a programmer who writes clean code is an artist who can take a blank screen through a series of transformations until it is an elegantly coded system.
 
-What Is Clean Code?
+## What Is Clean Code?
 There are probably as many definitions as there are programmers. So I asked some very well-known and deeply experienced programmers what they thought.
 
-Image
+![](figures/ch1/1-5fig_martin.jpg)
 
 Bjarne Stroustrup, inventor of C++ and author of The C++ Programming Language
 
@@ -116,7 +115,7 @@ Bjarne closes with the assertion that clean code does one thing well. It is no a
 
 Grady Booch, author of Object Oriented Analysis and Design with Applications
 
-Image
+![](figures/ch1/1-6fig_martin.jpg)
 
 Clean code is simple and direct. Clean code reads like well-written prose. Clean code never obscures the designer’s intent but rather is full of crisp abstractions and straightforward lines of control.
 
@@ -128,7 +127,7 @@ I find Grady’s use of the phrase “crisp abstraction” to be a fascinating o
 
 “Big” Dave Thomas, founder of OTI, godfather of the Eclipse strategy
 
-Image
+![](figures/ch1/1-7fig_martin.jpg)
 
 Clean code can be read, and enhanced by a developer other than its original author. It has unit and acceptance tests. It has meaningful names. It provides one way rather than many ways for doing one thing. It has minimal dependencies, which are explicitly defined, and provides a clear and minimal API. Code should be literate since depending on the language, not all necessary information can be expressed clearly in code alone.
 
@@ -144,7 +143,7 @@ Dave also says that code should be literate. This is a soft reference to Knuth�
 
 Michael Feathers, author of Working Effectively with Legacy Code
 
-Image
+![](figures/ch1/1-8fig_martin.jpg)
 
 I could list all of the qualities that I notice in clean code, but there is one overarching quality that leads to all of them. Clean code always looks like it was written by someone who cares. There is nothing obvious that you can do to make it better. All of those things were thought about by the code’s author, and if you try to imagine improvements, you’re led back to where you are, sitting in appreciation of the code someone left for you—code left by someone who cares deeply about the craft.
 
@@ -156,17 +155,14 @@ Ron Jeffries, author of Extreme Programming Installed and Extreme Programming Ad
 
 Ron began his career programming in Fortran at the Strategic Air Command and has written code in almost every language and on almost every machine. It pays to consider his words carefully.
 
-Image
+![](figures/ch1/1-9fig_martin.jpg)
 
 In recent years I begin, and nearly end, with Beck’s rules of simple code. In priority order, simple code:
 
-• Runs all the tests;
-
-• Contains no duplication;
-
-• Expresses all the design ideas that are in the system;
-
-• Minimizes the number of entities such as classes, methods, functions, and the like.
+- Runs all the tests;
+- Contains no duplication;
+- Expresses all the design ideas that are in the system;
+- Minimizes the number of entities such as classes, methods, functions, and the like.
 
 Of these, I focus mostly on duplication. When the same thing is done over and over, it’s a sign that there is an idea in our mind that is not well represented in the code. I try to figure out what it is. Then I try to express that idea more clearly.
 
@@ -186,7 +182,7 @@ Here, in a few short paragraphs, Ron has summarized the contents of this book. N
 
 Ward Cunningham, inventor of Wiki, inventor of Fit, coinventor of eXtreme Programming. Motive force behind Design Patterns. Smalltalk and OO thought leader. The godfather of all those who care about code.
 
-Image
+![](figures/ch1/1-10fig_martin.jpg)
 
 You know you are working on clean code when each routine you read turns out to be pretty much what you expected. You can call it beautiful code when the code also makes it look like the language was made for the problem.
 
@@ -198,10 +194,10 @@ Ward expects that when you read clean code you won’t be surprised at all. Inde
 
 And what about Ward’s notion of beauty? We’ve all railed against the fact that our languages weren’t designed for our problems. But Ward’s statement puts the onus back on us. He says that beautiful code makes the language look like it was made for the problem! So it’s our responsibility to make the language look simple! Language bigots everywhere, beware! It is not the language that makes programs appear simple. It is the programmer that make the language appear simple!
 
-SCHOOLS OF THOUGHT
+## SCHOOLS OF THOUGHT
 What about me (Uncle Bob)? What do I think clean code is? This book will tell you, in hideous detail, what I and my compatriots think about clean code. We will tell you what we think makes a clean variable name, a clean function, a clean class, etc. We will present these opinions as absolutes, and we will not apologize for our stridence. To us, at this point in our careers, they are absolutes. They are our school of thought about clean code.
 
-Image
+![](figures/ch1/1-11fig_martin.jpg)
 
 Martial artists do not all agree about the best martial art, or the best technique within a martial art. Often master martial artists will form their own schools of thought and gather students to learn from them. So we see Gracie Jiu Jistu, founded and taught by the Gracie family in Brazil. We see Hakkoryu Jiu Jistu, founded and taught by Okuyama Ryuho in Tokyo. We see Jeet Kune Do, founded and taught by Bruce Lee in the United States.
 
@@ -213,7 +209,7 @@ Consider this book a description of the Object Mentor School of Clean Code. The 
 
 Indeed, many of the recommendations in this book are controversial. You will probably not agree with all of them. You might violently disagree with some of them. That’s fine. We can’t claim final authority. On the other hand, the recommendations in this book are things that we have thought long and hard about. We have learned them through decades of experience and repeated trial and error. So whether you agree or disagree, it would be a shame if you did not see, and respect, our point of view.
 
-WE ARE AUTHORS
+## WE ARE AUTHORS
 The @author field of a Javadoc tells us who we are. We are authors. And one thing about authors is that they have readers. Indeed, authors are responsible for communicating well with their readers. The next time you write a line of code, remember you are an author, writing for readers who will judge your effort.
 
 You might ask: How much is code really read? Doesn’t most of the effort go into writing it?
@@ -245,7 +241,7 @@ Because this ratio is so high, we want the reading of code to be easy, even if i
 
 There is no escape from this logic. You cannot write code if you cannot read the surrounding code. The code you are trying to write today will be hard or easy to write depending on how hard or easy the surrounding code is to read. So if you want to go fast, if you want to get done quickly, if you want your code to be easy to write, make it easy to read.
 
-THE BOY SCOUT RULE
+## THE BOY SCOUT RULE
 It’s not enough to write the code well. The code has to be kept clean over time. We’ve all seen code rot and degrade as time passes. So we must take an active role in preventing this degradation.
 
 The Boy Scouts of America have a simple rule that we can apply to our profession.
@@ -258,12 +254,12 @@ If we all checked-in our code a little cleaner than when we checked it out, the 
 
 Can you imagine working on a project where the code simply got better as time passed? Do you believe that any other option is professional? Indeed, isn’t continuous improvement an intrinsic part of professionalism?
 
-PREQUEL AND PRINCIPLES
+## PREQUEL AND PRINCIPLES
 In many ways this book is a “prequel” to a book I wrote in 2002 entitled Agile Software Development: Principles, Patterns, and Practices (PPP). The PPP book concerns itself with the principles of object-oriented design, and many of the practices used by professional developers. If you have not read PPP, then you may find that it continues the story told by this book. If you have already read it, then you’ll find many of the sentiments of that book echoed in this one at the level of code.
 
 In this book you will find sporadic references to various principles of design. These include the Single Responsibility Principle (SRP), the Open Closed Principle (OCP), and the Dependency Inversion Principle (DIP) among others. These principles are described in depth in PPP.
 
-CONCLUSION
+## CONCLUSION
 Books on art don’t promise to make you an artist. All they can do is give you some of the tools, techniques, and thought processes that other artists have used. So too this book cannot promise to make you a good programmer. It cannot promise to give you “code-sense.” All it can do is show you the thought processes of good programmers and the tricks, techniques, and tools that they use.
 
 Just like a book on art, this book will be full of details. There will be lots of code. You’ll see good code and you’ll see bad code. You’ll see bad code transformed into good code. You’ll see lists of heuristics, disciplines, and techniques. You’ll see example after example. After that, it’s up to you.

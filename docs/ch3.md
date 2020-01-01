@@ -1,7 +1,6 @@
 # 第 3 章 Functions
-Image
 
-Image
+![](figures/ch3/3_1fig_martin.jpg)
 
 In the early days of programming we composed our systems of routines and subroutines. Then, in the era of Fortran and PL/1 we composed our systems of programs, subprograms, and functions. Nowadays only the function survives from those early days. Functions are the first line of organization in any program. Writing them well is the topic of this chapter.
 
@@ -106,7 +105,7 @@ Unless you are a student of FitNesse, you probably don’t understand all the de
 
 So what is it that makes a function like Listing 3-2 easy to read and understand? How can we make a function communicate its intent? What attributes can we give our functions that will allow a casual reader to intuit the kind of program they live inside?
 
-SMALL!
+## SMALL!
 The first rule of functions is that they should be small. The second rule of functions is that they should be smaller than that. This is not an assertion that I can justify. I can’t provide any references to research that shows that very small functions are better. What I can tell you is that for nearly four decades I have written functions of all different sizes. I’ve written several nasty 3,000-line abominations. I’ve written scads of functions in the 100 to 300 line range. And I’ve written functions that were 20 to 30 lines long. What this experience has taught me, through long trial and error, is that functions should be very small.
 
 In the eighties we used to say that a function should be no bigger than a screen-full. Of course we said that at a time when VT100 screens were 24 lines by 80 columns, and our editors used 4 lines for administrative purposes. Nowadays with a cranked-down font and a nice big monitor, you can fit 150 characters on a line and a 100 lines or more on a screen. Lines should not be 150 characters long. Functions should not be 100 lines long. Functions should hardly ever be 20 lines long.
@@ -128,26 +127,24 @@ Listing 3-3 HtmlUtil.java (re-refactored)
      return pageData.getHtml();
    }
 ```
-Blocks and Indenting
+## Blocks and Indenting
 This implies that the blocks within if statements, else statements, while statements, and so on should be one line long. Probably that line should be a function call. Not only does this keep the enclosing function small, but it also adds documentary value because the function called within the block can have a nicely descriptive name.
 
 This also implies that functions should not be large enough to hold nested structures. Therefore, the indent level of a function should not be greater than one or two. This, of course, makes the functions easier to read and understand.
 
-DO ONE THING
+## DO ONE THING
 It should be very clear that Listing 3-1 is doing lots more than one thing. It’s creating buffers, fetching pages, searching for inherited pages, rendering paths, appending arcane strings, and generating HTML, among other things. Listing 3-1 is very busy doing lots of different things. On the other hand, Listing 3-3 is doing one simple thing. It’s including setups and teardowns into test pages.
 
 The following advice has appeared in one form or another for 30 years or more.
 
-Image
+![](figures/ch3/3_2fig_martin.jpg)
 
 FUNCTIONS SHOULD DO ONE THING. THEY SHOULD DO IT WELL. THEY SHOULD DO IT ONLY.
 
 The problem with this statement is that it is hard to know what “one thing” is. Does Listing 3-3 do one thing? It’s easy to make the case that it’s doing three things:
 
 1. Determining whether the page is a test page.
-
 2. If so, including setups and teardowns.
-
 3. Rendering the page in HTML.
 
 So which is it? Is the function doing one thing or three things? Notice that the three steps of the function are one level of abstraction below the stated name of the function. We can describe the function by describing it as a brief TO4 paragraph:
@@ -162,15 +159,15 @@ It should be very clear that Listing 3-1 contains steps at many different levels
 
 So, another way to know that a function is doing more than “one thing” is if you can extract another function from it with a name that is not merely a restatement of its implementation [G34].
 
-Sections within Functions
+## Sections within Functions
 Look at Listing 4-7 on page 71. Notice that the generatePrimes function is divided into sections such as declarations, initializations, and sieve. This is an obvious symptom of doing more than one thing. Functions that do one thing cannot be reasonably divided into sections.
 
-ONE LEVEL OF ABSTRACTION PER FUNCTION
+## ONE LEVEL OF ABSTRACTION PER FUNCTION
 In order to make sure our functions are doing “one thing,” we need to make sure that the statements within our function are all at the same level of abstraction. It is easy to see how Listing 3-1 violates this rule. There are concepts in there that are at a very high level of abstraction, such as getHtml(); others that are at an intermediate level of abstraction, such as: String pagePathName = PathParser.render(pagePath); and still others that are remarkably low level, such as: .append(”\n”).
 
 Mixing levels of abstraction within a function is always confusing. Readers may not be able to tell whether a particular expression is an essential concept or a detail. Worse, like broken windows, once details are mixed with essential concepts, more and more details tend to accrete within the function.
 
-Reading Code from Top to Bottom: The Stepdown Rule
+## Reading Code from Top to Bottom: The Stepdown Rule
 We want the code to read like a top-down narrative.5 We want every function to be followed by those at the next level of abstraction so that we can read the program, descending one level of abstraction at a time as we read down the list of functions. I call this The Step-down Rule.
 
 5. [KP78], p. 37.
@@ -189,7 +186,7 @@ It turns out to be very difficult for programmers to learn to follow this rule a
 
 Take a look at Listing 3-7 at the end of this chapter. It shows the whole testableHtml function refactored according to the principles described here. Notice how each function introduces the next, and each function remains at a consistent level of abstraction.
 
-SWITCH STATEMENTS
+## SWITCH STATEMENTS
 It’s hard to make a small switch statement.6 Even a switch statement with only two cases is larger than I’d like a single block or function to be. It’s also hard to make a switch statement that does one thing. By their nature, switch statements always do N things. Unfortunately we can’t always avoid switch statements, but we can make sure that each switch statement is buried in a low-level class and is never repeated. We do this, of course, with polymorphism.
 
 6. And, of course, I include if/else chains in this.
@@ -266,7 +263,7 @@ Listing 3-5 Employee and Factory
      }
    }
 ```
-USE DESCRIPTIVE NAMES
+## USE DESCRIPTIVE NAMES
 In Listing 3-7 I changed the name of our example function from testableHtml to SetupTeardownIncluder.render. This is a far better name because it better describes what the function does. I also gave each of the private methods an equally descriptive name such as isTestable or includeSetupAndTeardownPages. It is hard to overestimate the value of good names. Remember Ward’s principle: “You know you are working on clean code when each routine turns out to be pretty much what you expected.” Half the battle to achieving that principle is choosing good names for small functions that do one thing. The smaller and more focused a function is, the easier it is to choose a descriptive name.
 
 Don’t be afraid to make a name long. A long descriptive name is better than a short enigmatic name. A long descriptive name is better than a long descriptive comment. Use a naming convention that allows multiple words to be easily read in the function names, and then make use of those multiple words to give the function a name that says what it does.
@@ -277,10 +274,10 @@ Choosing descriptive names will clarify the design of the module in your mind an
 
 Be consistent in your names. Use the same phrases, nouns, and verbs in the function names you choose for your modules. Consider, for example, the names includeSetup-AndTeardownPages, includeSetupPages, includeSuiteSetupPage, and includeSetupPage. The similar phraseology in those names allows the sequence to tell a story. Indeed, if I showed you just the sequence above, you’d ask yourself: “What happened to includeTeardownPages, includeSuiteTeardownPage, and includeTeardownPage?” How’s that for being “… pretty much what you expected.”
 
-FUNCTION ARGUMENTS
+## FUNCTION ARGUMENTS
 The ideal number of arguments for a function is zero (niladic). Next comes one (monadic), followed closely by two (dyadic). Three arguments (triadic) should be avoided where possible. More than three (polyadic) requires very special justification—and then shouldn’t be used anyway.
 
-Image
+![](figures/ch3/3_3fig_martin.jpg)
 
 Arguments are hard. They take a lot of conceptual power. That’s why I got rid of almost all of them from the example. Consider, for instance, the StringBuffer in the example. We could have passed it around as an argument rather than making it an instance variable, but then our readers would have had to interpret it each time they saw it. When you are reading the story told by the module, includeSetupPage() is easier to understand than includeSetupPageInto(newPage-Content). The argument is at a different level of abstraction than the function name and forces you to know a detail (in other words, StringBuffer) that isn’t particularly important at that point.
 
@@ -290,19 +287,19 @@ Output arguments are harder to understand than input arguments. When we read a f
 
 One input argument is the next best thing to no arguments. SetupTeardown-Includer.render(pageData) is pretty easy to understand. Clearly we are going to render the data in the pageData object.
 
-Common Monadic Forms
+## Common Monadic Forms
 There are two very common reasons to pass a single argument into a function. You may be asking a question about that argument, as in boolean fileExists(“MyFile”). Or you may be operating on that argument, transforming it into something else and returning it. For example, InputStream fileOpen(“MyFile”) transforms a file name String into an InputStream return value. These two uses are what readers expect when they see a function. You should choose names that make the distinction clear, and always use the two forms in a consistent context. (See Command Query Separation below.)
 
 A somewhat less common, but still very useful form for a single argument function, is an event. In this form there is an input argument but no output argument. The overall program is meant to interpret the function call as an event and use the argument to alter the state of the system, for example, void passwordAttemptFailedNtimes(int attempts). Use this form with care. It should be very clear to the reader that this is an event. Choose names and contexts carefully.
 
 Try to avoid any monadic functions that don’t follow these forms, for example, void includeSetupPageInto(StringBuffer pageText). Using an output argument instead of a return value for a transformation is confusing. If a function is going to transform its input argument, the transformation should appear as the return value. Indeed, StringBuffer transform(StringBuffer in) is better than void transform(StringBuffer out), even if the implementation in the first case simply returns the input argument. At least it still follows the form of a transformation.
 
-Flag Arguments
+## Flag Arguments
 Flag arguments are ugly. Passing a boolean into a function is a truly terrible practice. It immediately complicates the signature of the method, loudly proclaiming that this function does more than one thing. It does one thing if the flag is true and another if the flag is false!
 
 In Listing 3-7 we had no choice because the callers were already passing that flag in, and I wanted to limit the scope of refactoring to the function and below. Still, the method call render(true) is just plain confusing to a poor reader. Mousing over the call and seeing render(boolean isSuite) helps a little, but not that much. We should have split the function into two: renderForSuite() and renderForSingleTest().
 
-Dyadic Functions
+## Dyadic Functions
 A function with two arguments is harder to understand than a monadic function. For example, writeField(name) is easier to understand than writeField(output-Stream, name).10 Though the meaning of both is clear, the first glides past the eye, easily depositing its meaning. The second requires a short pause until we learn to ignore the first parameter. And that, of course, eventually results in problems because we should never ignore any part of code. The parts we ignore are where the bugs will hide.
 
 10. I just finished refactoring a module that used the dyadic form. I was able to make the outputStream a field of the class and convert all the writeField calls to the monadic form. The result was much cleaner.
@@ -313,14 +310,14 @@ Even obvious dyadic functions like assertEquals(expected, actual) are problemati
 
 Dyads aren’t evil, and you will certainly have to write them. However, you should be aware that they come at a cost and should take advantage of what mechanisms may be available to you to convert them into monads. For example, you might make the writeField method a member of outputStream so that you can say outputStream. writeField(name). Or you might make the outputStream a member variable of the current class so that you don’t have to pass it. Or you might extract a new class like FieldWriter that takes the outputStream in its constructor and has a write method.
 
-Triads
+## Triads
 Functions that take three arguments are significantly harder to understand than dyads. The issues of ordering, pausing, and ignoring are more than doubled. I suggest you think very carefully before creating a triad.
 
 For example, consider the common overload of assertEquals that takes three arguments: assertEquals(message, expected, actual). How many times have you read the message and thought it was the expected? I have stumbled and paused over that particular triad many times. In fact, every time I see it, I do a double-take and then learn to ignore the message.
 
 On the other hand, here is a triad that is not quite so insidious: assertEquals(1.0, amount, .001). Although this still requires a double-take, it’s one that’s worth taking. It’s always good to be reminded that equality of floating point values is a relative thing.
 
-Argument Objects
+## Argument Objects
 When a function seems to need more than two or three arguments, it is likely that some of those arguments ought to be wrapped into a class of their own. Consider, for example, the difference between the two following declarations:
 ```java
    Circle makeCircle(double x, double y, double radius);
@@ -328,7 +325,7 @@ When a function seems to need more than two or three arguments, it is likely tha
 ```
 Reducing the number of arguments by creating objects out of them may seem like cheating, but it’s not. When groups of variables are passed together, the way x and y are in the example above, they are likely part of a concept that deserves a name of its own.
 
-Argument Lists
+## Argument Lists
 Sometimes we want to pass a variable number of arguments into a function. Consider, for example, the String.format method:
 ```java
    String.format(”%s worked %.2f hours.”, name, hours);
@@ -343,12 +340,12 @@ So all the same rules apply. Functions that take variable arguments can be monad
    void dyad(String name, Integer… args);
    void triad(String name, int count, Integer… args);
 ```
-Verbs and Keywords
+## Verbs and Keywords
 Choosing good names for a function can go a long way toward explaining the intent of the function and the order and intent of the arguments. In the case of a monad, the function and argument should form a very nice verb/noun pair. For example, write(name) is very evocative. Whatever this “name” thing is, it is being “written.” An even better name might be writeField(name), which tells us that the “name” thing is a “field.”
 
 This last is an example of the keyword form of a function name. Using this form we encode the names of the arguments into the function name. For example, assertEquals might be better written as assertExpectedEqualsActual(expected, actual). This strongly mitigates the problem of having to remember the ordering of the arguments.
 
-HAVE NO SIDE EFFECTS
+## HAVE NO SIDE EFFECTS
 Side effects are lies. Your function promises to do one thing, but it also does other hidden things. Sometimes it will make unexpected changes to the variables of its own class. Sometimes it will make them to the parameters passed into the function or to system globals. In either case they are devious and damaging mistruths that often result in strange temporal couplings and order dependencies.
 
 Consider, for example, the seemingly innocuous function in Listing 3-6. This function uses a standard algorithm to match a userName to a password. It returns true if they match and false if anything goes wrong. But it also has a side effect. Can you spot it?
@@ -378,7 +375,7 @@ The side effect is the call to Session.initialize(), of course. The checkPasswor
 
 This side effect creates a temporal coupling. That is, checkPassword can only be called at certain times (in other words, when it is safe to initialize the session). If it is called out of order, session data may be inadvertently lost. Temporal couplings are confusing, especially when hidden as a side effect. If you must have a temporal coupling, you should make it clear in the name of the function. In this case we might rename the function checkPasswordAndInitializeSession, though that certainly violates “Do one thing.”
 
-Output Arguments
+## Output Arguments
 Arguments are most naturally interpreted as inputs to a function. If you have been programming for more than a few years, I’m sure you’ve done a double-take on an argument that was actually an output rather than an input. For example:
 ```java
    appendFooter(s);
@@ -395,7 +392,7 @@ In the days before object oriented programming it was sometimes necessary to hav
 ```
 In general output arguments should be avoided. If your function must change the state of something, have it change the state of its owning object.
 
-COMMAND QUERY SEPARATION
+## COMMAND QUERY SEPARATION
 Functions should either do something or answer something, but not both. Either your function should change the state of an object, or it should return some information about that object. Doing both often leads to confusion. Consider, for example, the following function:
 ```java
    public boolean set(String attribute, String value);
@@ -413,7 +410,7 @@ The author intended set to be a verb, but in the context of the if statement it 
      …
    }
 ```
-PREFER EXCEPTIONS TO RETURNING ERROR CODES
+## PREFER EXCEPTIONS TO RETURNING ERROR CODES
 Returning error codes from command functions is a subtle violation of command query separation. It promotes commands being used as expressions in the predicates of if statements.
 ```java
    if (deletePage(page) == E_OK)
@@ -446,7 +443,7 @@ On the other hand, if you use exceptions instead of returned error codes, then t
      logger.log(e.getMessage());
    }
 ```
-Extract Try/Catch Blocks
+## Extract Try/Catch Blocks
 Try/catch blocks are ugly in their own right. They confuse the structure of the code and mix error processing with normal processing. So it is better to extract the bodies of the try and catch blocks out into functions of their own.
 ```java
    public void delete(Page page) {
@@ -470,10 +467,10 @@ Try/catch blocks are ugly in their own right. They confuse the structure of the 
 ```
 In the above, the delete function is all about error processing. It is easy to understand and then ignore. The deletePageAndAllReferences function is all about the processes of fully deleting a page. Error handling can be ignored. This provides a nice separation that makes the code easier to understand and modify.
 
-Error Handling Is One Thing
+## Error Handling Is One Thing
 Functions should do one thing. Error handing is one thing. Thus, a function that handles errors should do nothing else. This implies (as in the example above) that if the keyword try exists in a function, it should be the very first word in the function and that there should be nothing after the catch/finally blocks.
 
-The Error.java Dependency Magnet
+## The Error.java Dependency Magnet
 Returning error codes usually implies that there is some class or enum in which all the error codes are defined.
 ```java
    public enum Error {
@@ -494,18 +491,18 @@ When you use exceptions rather than error codes, then new exceptions are derivat
 
 12. This is an example of the Open Closed Principle (OCP) [PPP02].
 
-DON’T REPEAT YOURSELF13
+## DON’T REPEAT YOURSELF13
 13. The DRY principle. [PRAG].
 
 Look back at Listing 3-1 carefully and you will notice that there is an algorithm that gets repeated four times, once for each of the SetUp, SuiteSetUp, TearDown, and SuiteTearDown cases. It’s not easy to spot this duplication because the four instances are intermixed with other code and aren’t uniformly duplicated. Still, the duplication is a problem because it bloats the code and will require four-fold modification should the algorithm ever have to change. It is also a four-fold opportunity for an error of omission.
 
-Image
+![](figures/ch3/3_4fig_martin.jpg)
 
 This duplication was remedied by the include method in Listing 3-7. Read through that code again and notice how the readability of the whole module is enhanced by the reduction of that duplication.
 
 Duplication may be the root of all evil in software. Many principles and practices have been created for the purpose of controlling or eliminating it. Consider, for example, that all of Codd’s database normal forms serve to eliminate duplication in data. Consider also how object-oriented programming serves to concentrate code into base classes that would otherwise be redundant. Structured programming, Aspect Oriented Programming, Component Oriented Programming, are all, in part, strategies for eliminating duplication. It would appear that since the invention of the subroutine, innovations in software development have been an ongoing attempt to eliminate duplication from our source code.
 
-STRUCTURED PROGRAMMING
+## STRUCTURED PROGRAMMING
 Some programmers follow Edsger Dijkstra’s rules of structured programming.14 Dijkstra said that every function, and every block within a function, should have one entry and one exit. Following these rules means that there should only be one return statement in a function, no break or continue statements in a loop, and never, ever, any goto statements.
 
 14. [SP72].
@@ -514,7 +511,7 @@ While we are sympathetic to the goals and disciplines of structured programming,
 
 So if you keep your functions small, then the occasional multiple return, break, or continue statement does no harm and can sometimes even be more expressive than the single-entry, single-exit rule. On the other hand, goto only makes sense in large functions, so it should be avoided.
 
-HOW DO YOU WRITE FUNCTIONS LIKE THIS?
+## HOW DO YOU WRITE FUNCTIONS LIKE THIS?
 Writing software is like any other kind of writing. When you write a paper or an article, you get your thoughts down first, then you massage it until it reads well. The first draft might be clumsy and disorganized, so you wordsmith it and restructure it and refine it until it reads the way you want it to read.
 
 When I write functions, they come out long and complicated. They have lots of indenting and nested loops. They have long argument lists. The names are arbitrary, and there is duplicated code. But I also have a suite of unit tests that cover every one of those clumsy lines of code.
@@ -523,14 +520,14 @@ So then I massage and refine that code, splitting out functions, changing names,
 
 In the end, I wind up with functions that follow the rules I’ve laid down in this chapter. I don’t write them that way to start. I don’t think anyone could.
 
-CONCLUSION
+## CONCLUSION
 Every system is built from a domain-specific language designed by the programmers to describe that system. Functions are the verbs of that language, and classes are the nouns. This is not some throwback to the hideous old notion that the nouns and verbs in a requirements document are the first guess of the classes and functions of a system. Rather, this is a much older truth. The art of programming is, and has always been, the art of language design.
 
 Master programmers think of systems as stories to be told rather than programs to be written. They use the facilities of their chosen programming language to construct a much richer and more expressive language that can be used to tell that story. Part of that domain-specific language is the hierarchy of functions that describe all the actions that take place within that system. In an artful act of recursion those actions are written to use the very domain-specific language they define to tell their own small part of the story.
 
 This chapter has been about the mechanics of writing functions well. If you follow the rules herein, your functions will be short, well named, and nicely organized. But never forget that your real goal is to tell the story of the system, and that the functions you write need to fit cleanly together into a clear and precise language to help you with that telling.
 
-SETUPTEARDOWNINCLUDER
+## SETUPTEARDOWNINCLUDER
 
 Listing 3-7 SetupTeardownIncluder.java
 ```java

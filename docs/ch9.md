@@ -1,9 +1,6 @@
 # 第 9 章 Unit Tests
-Image
 
-Image
-
-Image
+![](figures/ch9/9_1fig_martin.jpg)
 
 Our profession has come a long way in the last ten years. In 1997 no one had heard of Test Driven Development. For the vast majority of us, unit tests were short bits of throw-away code that we wrote to make sure our programs “worked.” We would painstakingly write our classes and methods, and then we would concoct some ad hoc code to test them. Typically this would involve some kind of simple driver program that would allow us to manually interact with the program we had written.
 
@@ -352,13 +349,13 @@ Listing 9-8
 ```
 The three test functions probably ought to be like this:
 
-• Given the last day of a month with 31 days (like May):
+- Given the last day of a month with 31 days (like May):
 
 1. When you add one month, such that the last day of that month is the 30th (like June), then the date should be the 30th of that month, not the 31st.
 
 2. When you add two months to that date, such that the final month has 31 days, then the date should be the 31st.
 
-• Given the last day of a month with 30 days in it (like June):
+- Given the last day of a month with 30 days in it (like June):
 
 1. When you add one month such that the last day of that month has 31 days, then the date should be the 30th, not the 31st.
 

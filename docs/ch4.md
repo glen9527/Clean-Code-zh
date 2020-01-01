@@ -1,7 +1,6 @@
 # 第 4 章 Comments
-Image
 
-Image
+![](figures/ch4/4_1fig_martin.jpg)
 
 “Don’t comment bad code—rewrite it.”—Brian W. Kernighan and P. J. Plaugher1
 1. [KP78], p. 144.
@@ -148,7 +147,8 @@ There is a substantial risk, of course, that a clarifying comment is incorrect. 
 Warning of Consequences
 Sometimes it is useful to warn other programmers about certain consequences. For example, here is a comment that explains why a particular test case is turned off:
 
-Image
+![](figures/ch4/4_2fig_martin.jpg)
+
 ```java
    // Don't run unless you 
    // have some time to kill.
@@ -166,6 +166,7 @@ Image
 Nowadays, of course, we’d turn off the test case by using the @Ignore attribute with an appropriate explanatory string. @Ignore(”Takes too long to run”). But back in the days before JUnit 4, putting an underscore in front of the method name was a common convention. The comment, while flippant, makes the point pretty well.
 
 Here’s another, more poignant example:
+
 ```java
    public static 
      SimpleDateFormat makeStandardHttpDateFormat()

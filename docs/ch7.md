@@ -1,11 +1,8 @@
 # 第 7 章 Error Handling
-Image
-
-Image
 
 by Michael Feathers
 
-Image
+![](figures/ch7/103fig01.jpg)
 
 It might seem odd to have a section about error handling in a book about clean code. Error handling is just one of those things that we all have to do when we program. Input can be abnormal and devices can fail. In short, things can go wrong, and when they do, we as programmers are responsible for making sure that our code does what it needs to do.
 
@@ -214,7 +211,7 @@ Often a single exception class is fine for a particular area of code. The inform
 DEFINE THE NORMAL FLOW
 If you follow the advice in the preceding sections, you’ll end up with a good amount of separation between your business logic and your error handling. The bulk of your code will start to look like a clean unadorned algorithm. However, the process of doing this pushes error detection to the edges of your program. You wrap external APIs so that you can throw your own exceptions, and you define a handler above your code so that you can deal with any aborted computation. Most of the time this is a great approach, but there are some times when you may not want to abort.
 
-Image
+![](figures/ch7/103fig02.jpg)
 
 Let’s take a look at an example. Here is some awkward code that sums expenses in a billing application:
 ```java
