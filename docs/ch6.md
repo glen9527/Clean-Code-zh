@@ -407,7 +407,7 @@ The solution, of course, is to treat the Active Record as a data structure and t
 
 > 当然，解决方案就是把 Active Record 当做数据结构，并创建包含业务规则、隐藏内部数据（可能就是 Active Record 的实体）的独立对象。
 
-## 6.6 CONCLUSION 小结
+## 6.5 CONCLUSION 小结
 
 Objects expose behavior and hide data. This makes it easy to add new kinds of objects without changing existing behaviors. It also makes it hard to add new behaviors to existing objects. Data structures expose data and have no significant behavior. This makes it easy to add new behaviors to existing data structures but makes it hard to add new data structures to existing functions.
 
