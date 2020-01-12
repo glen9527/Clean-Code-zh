@@ -1,5 +1,5 @@
-# Appendix A
-Concurrency II
+# 附录 A 并发编程 II
+
 by Brett L. Schuchert
 
 This appendix supports and amplifies the Concurrency chapter on page 177. It is written as a series of independent topics and you can generally read them in any order. There is some duplication between sections to allow for such reading.
