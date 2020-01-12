@@ -1,4 +1,4 @@
-# 第 1 章 Clean Code
+# 第 1 章 Clean Code 整洁代码
 
 ![](figures/ch1/1-1fig_martin.jpg)
 
@@ -10,7 +10,7 @@ This is a book about good programming. It is filled with code. We are going to l
 
 > 这是本有关编写好程序的书。它充斥着代码。我们要从各个方向来考察这些代码。从顶向下，从底往上，从里而外。读完后，就能知道许多关于代码的事了。而且，我们还能说出好代码和糟糕的代码之间的差异。我们将了解到如何写出好代码。我们也会知道，如何将糟糕的代码改成好代码。
 
-## 1.1 THERE WILL BE CODE
+## 1.1 THERE WILL BE CODE 要有代码
 
 One might argue that a book about code is somehow behind the times—that code is no longer the issue; that we should be concerned about models and requirements instead. Indeed some have suggested that we are close to the end of code. That soon all code will be generated instead of written. That programmers simply won’t be needed because business people will generate programs from specifications.
 
@@ -36,7 +36,7 @@ Remember that code is really the language in which we ultimately express the req
 
 > 记住，代码确然是我们最终用来表达需求的那种语言。我们可以创造各种与需求接近的语言。我们可以创造帮助把需求解析和汇整为正式结构的各种工具。然而，我们永远无法抛弃必要的精确性——所以代码永存。
 
-## 1.2 BAD CODE
+## 1.2 BAD CODE 糟糕的代码
 
 I was recently reading the preface to Kent Beck’s book Implementation Patterns.1 He says, “… this book is based on a rather fragile premise: that good code matters….” A fragile premise? I disagree! I think that premise is one of the most robust, supported, and overloaded of all the premises in our craft (and I think Kent knows it). We know good code matters because we’ve had to deal for so long with its lack.
 
@@ -70,7 +70,7 @@ We’ve all looked at the mess we’ve just made and then have chosen to leave i
 
 > 我们都曾经瞟一眼自己亲手造成的混乱，决定弃之而不顾，走向新一天。我们都曾经看到自己的烂程序居然能运行，然后断言能运行的烂程序总比什么都没有强。我们都曾经说过有朝一日再回头清理。当然，在那些日子里，我们都没听过勒布朗（LeBlanc）法则：稍后等于永不（Later equals never）。
 
-## 1.3 THE TOTAL COST OF OWNING A MESS
+## 1.3 THE TOTAL COST OF OWNING A MESS 混乱的代价
 
 If you have been a programmer for more than two or three years, you have probably been significantly slowed down by someone else’s messy code. If you have been a programmer for longer than two or three years, you have probably been slowed down by messy code. The degree of the slowdown can be significant. Over the span of a year or two, teams that were moving very fast at the beginning of a project can find themselves moving at a snail’s pace. Every change they make to the code breaks two or three other parts of the code. No change is trivial. Every addition or modification to the system requires that the tangles, twists, and knots be “understood” so that more tangles, twists, and knots can be added. Over time the mess becomes so big and so deep and so tall, they can not clean it up. There is no way at all.
 
@@ -84,7 +84,7 @@ Figure 1-1 Productivity vs. time
 
 ![](figures/ch1/1-4fig_martin.jpg)
 
-### 1.3.1 The Grand Redesign in the Sky
+### 1.3.1 The Grand Redesign in the Sky 华丽新设计
 
 Eventually the team rebels. They inform management that they cannot continue to develop in this odious code base. They demand a redesign. Management does not want to expend the resources on a whole new redesign of the project, but they cannot deny that productivity is terrible. Eventually they bend to the demands of the developers and authorize the grand redesign in the sky.
 
@@ -106,7 +106,7 @@ If you have experienced even one small part of the story I just told, then you a
 
 > 假使你经历过哪怕是一小段我谈到的这种事，那么你一定知道，花时间保持代码整洁不但有关效率，还有关生存。
 
-### 1.3.2 Attitude
+### 1.3.2 Attitude 态度
 
 Have you ever waded through a mess so grave that it took weeks to do what should have taken hours? Have you seen what should have been a one-line change, made instead in hundreds of different modules? These symptoms are all too common.
 
@@ -138,7 +138,7 @@ So too it is unprofessional for programmers to bend to the will of managers who 
 
 > 同理，程序员遵从不了解混乱风险的经理的意愿，也是不专业的做法。
 
-### 1.3.3 The Primal Conundrum
+### 1.3.3 The Primal Conundrum 迷题
 
 Programmers face a conundrum of basic values. All developers with more than a few years experience know that previous messes slow them down. And yet all developers feel the pressure to make messes in order to meet deadlines. In short, they don’t take the time to go fast!
 
@@ -148,7 +148,7 @@ True professionals know that the second part of the conundrum is wrong. You will
 
 > 真正的专业人士明白，这道谜题的第二部分说错了。制造混乱无助于赶上期限。混乱只会立刻拖慢你，叫你错过期限。赶上期限的唯一方法——做得快的唯一方法 ——就是始终尽可能保持代码整洁。
 
-### 1.3.4 The Art of Clean Code?
+### 1.3.4 The Art of Clean Code? 整洁代码的艺术
 
 Let’s say you believe that messy code is a significant impediment. Let’s say that you accept that the only way to go fast is to keep your code clean. Then you must ask yourself: “How do I write clean code?” It’s no good trying to write clean code if you don’t know what it means for code to be clean!
 
@@ -170,7 +170,7 @@ In short, a programmer who writes clean code is an artist who can take a blank s
 
 > 简言之，编写整洁代码的程序员就像是艺术家，他能用一系列变换把一块白板变作由优雅代码构成的系统。
 
-### 1.3.5 What Is Clean Code?
+### 1.3.5 What Is Clean Code? 什么是整洁代码
 
 There are probably as many definitions as there are programmers. So I asked some very well-known and deeply experienced programmers what they thought.
 
@@ -360,7 +360,7 @@ And what about Ward’s notion of beauty? We’ve all railed against the fact th
 
 > 那 Ward 有关“美”的说法又如何呢？我们都曾面临语言不是为要解决的问题所设计的困境。但 Ward 的说法又把球踢回我们这边。他说，漂亮的代码让编程语言像是专为解决那个问题而存在！所以，让语言变得简单的责任就在我们身上了！当心，语言是冥顽不化的！是程序员让语言显得简单。
 
-## 1.4 SCHOOLS OF THOUGHT
+## 1.4 SCHOOLS OF THOUGHT 思想流派
 
 What about me (Uncle Bob)? What do I think clean code is? This book will tell you, in hideous detail, what I and my compatriots think about clean code. We will tell you what we think makes a clean variable name, a clean function, a clean class, etc. We will present these opinions as absolutes, and we will not apologize for our stridence. To us, at this point in our careers, they are absolutes. They are our school of thought about clean code.
 
@@ -388,7 +388,7 @@ Indeed, many of the recommendations in this book are controversial. You will pro
 
 > 实际上，书中很多建议都存在争议。或许你并不完全同意这些建议。你可能会强烈反对其中一些建议。这样挺好的。我们不能要求做最终权威。另外一方面，书中列出的建议，乃是我们长久苦思、从数十年的从业经验和无数尝试与错误中得来。无论你同意与否，如果你没看到或是不尊敬我们的观点，就真该自己害臊。
 
-## 1.5 WE ARE AUTHORS
+## 1.5 WE ARE AUTHORS 我们是作者
 
 The @author field of a Javadoc tells us who we are. We are authors. And one thing about authors is that they have readers. Indeed, authors are responsible for communicating well with their readers. The next time you write a line of code, remember you are an author, writing for readers who will judge your effort.
 
@@ -450,7 +450,7 @@ There is no escape from this logic. You cannot write code if you cannot read the
 
 > 这事概无例外。不读周边代码的话就没法写代码。编写代码的难度，取决于读周边代码的难度。要想干得快，要想早点做完，要想轻松写代码，先让代码易读吧。
 
-## 1.6 THE BOY SCOUT RULE
+## 1.6 THE BOY SCOUT RULE 童子军军规
 
 It’s not enough to write the code well. The code has to be kept clean over time. We’ve all seen code rot and degrade as time passes. So we must take an active role in preventing this degradation.
 
@@ -474,7 +474,7 @@ Can you imagine working on a project where the code simply got better as time pa
 
 > 你想要为一个代码随时间流逝而越变越好的项目工作吗？你还能相信有其他更专业的做法吗？难道持续改进不是专业性的内在组成部分吗？
 
-## 1.7 PREQUEL AND PRINCIPLES
+## 1.7 PREQUEL AND PRINCIPLES 前传与原则
 
 In many ways this book is a “prequel” to a book I wrote in 2002 entitled Agile Software Development: Principles, Patterns, and Practices (PPP). The PPP book concerns itself with the principles of object-oriented design, and many of the practices used by professional developers. If you have not read PPP, then you may find that it continues the story told by this book. If you have already read it, then you’ll find many of the sentiments of that book echoed in this one at the level of code.
 
@@ -484,7 +484,7 @@ In this book you will find sporadic references to various principles of design. 
 
 > 在本书中，你会发现对不同设计原则的引用，包括单一权责原则（Single Responsibility Principle，SRP）、开放闭合原则（Open Closed Principle，OCP）和依赖倒置原则（Dependency Inversion Principle，DIP）等。
 
-## 1.8 CONCLUSION
+## 1.8 CONCLUSION 小结
 
 Books on art don’t promise to make you an artist. All they can do is give you some of the tools, techniques, and thought processes that other artists have used. So too this book cannot promise to make you a good programmer. It cannot promise to give you “code-sense.” All it can do is show you the thought processes of good programmers and the tricks, techniques, and tools that they use.
 

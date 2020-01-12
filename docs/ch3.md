@@ -415,7 +415,7 @@ One input argument is the next best thing to no arguments. SetupTeardown-Include
 
 > 相较于没有参数，只有一个输入参数算是第二好的做法。SetupTeardownInclude.render （pageData）也相当易于理解。很明显，我们将渲染 pageData 对象中的数据。
 
-## 3.6.1 Common Monadic Forms 一元函数的普遍形式
+### 3.6.1 Common Monadic Forms 一元函数的普遍形式
 
 There are two very common reasons to pass a single argument into a function. You may be asking a question about that argument, as in boolean fileExists(“MyFile”). Or you may be operating on that argument, transforming it into something else and returning it. For example, InputStream fileOpen(“MyFile”) transforms a file name String into an InputStream return value. These two uses are what readers expect when they see a function. You should choose names that make the distinction clear, and always use the two forms in a consistent context. (See Command Query Separation below.)
 
@@ -635,7 +635,7 @@ if (attributeExists(”username”)) {
 }
 ```
 
-### 3.9 PREFER EXCEPTIONS TO RETURNING ERROR CODES 使用异常替代返回错误码
+## 3.9 PREFER EXCEPTIONS TO RETURNING ERROR CODES 使用异常替代返回错误码
 
 Returning error codes from command functions is a subtle violation of command query separation. It promotes commands being used as expressions in the predicates of if statements.
 

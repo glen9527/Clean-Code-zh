@@ -1,4 +1,4 @@
-# 第 2 章 Meaningful Names
+# 第 2 章 Meaningful Names 有意义的命名
 
 ![](figures/ch2/2_1fig_martin.jpg)
 
@@ -10,7 +10,7 @@ Names are everywhere in software. We name our variables, our functions, our argu
 
 > 软件中随处可见命名。我们给变量、函数、参数、类和封包命名。我们给源代码及源代码所在目录命名。我们给 jar 文件、war 文件和 ear 文件命名。我们命名、命名，不断命名。既然有这么多命名要做，不妨做好它。下文列出了取个好名字的几条简单规则。
 
-## USE INTENTION-REVEALING NAMES
+## 2.2 USE INTENTION-REVEALING NAMES 名副其实
 
 It is easy to say that names should reveal intent. What we want to impress upon you is that we are serious about this. Choosing good names takes time but saves more than it takes. So take care with your names and change them when you find better ones. Everyone who reads your code (including you) will be happier if you do.
 
