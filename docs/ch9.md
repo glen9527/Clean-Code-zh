@@ -6,7 +6,7 @@ Our profession has come a long way in the last ten years. In 1997 no one had hea
 
 I remember writing a C++ program for an embedded real-time system back in the mid-90s. The program was a simple timer with the following signature:
 ```cpp
-   void Timer::ScheduleCommand(Command* theCommand, int milliseconds)
+void Timer::ScheduleCommand(Command* theCommand, int milliseconds)
 ```
 The idea was simple; the execute method of the Command would be executed in a new thread after the specified number of milliseconds. The problem was, how to test it.
 
@@ -73,70 +73,70 @@ Consider the code from FitNesse in Listing 9-1. These three tests are difficult 
 
 Listing 9-1 SerializedPageResponderTest.java
 ```java
-   public void testGetPageHieratchyAsXml() throws Exception
-   {
+public void testGetPageHieratchyAsXml() throws Exception
+{
 
-     crawler.addPage(root, PathParser.parse(“PageOne”));
-     crawler.addPage(root, PathParser.parse(“PageOne.ChildOne”));
-     crawler.addPage(root, PathParser.parse(“PageTwo”));
- 
-     request.setResource(“root”);
-     request.addInput(“type”, “pages”);
-     Responder responder = new SerializedPageResponder();
-     SimpleResponse response =
-       (SimpleResponse) responder.makeResponse(
-          new FitNesseContext(root), request);
-     String xml = response.getContent();
- 
-     assertEquals(“text/xml”, response.getContentType());
-     assertSubString(“<name>PageOne</name>”, xml);
-     assertSubString(“<name>PageTwo</name>”, xml);
-     assertSubString(“<name>ChildOne</name>”, xml);
-   }
-   public void testGetPageHieratchyAsXmlDoesntContainSymbolicLinks()
-   throws Exception {
- 
-     WikiPage pageOne = crawler.addPage(root, PathParser.parse(“PageOne”));
-     crawler.addPage(root, PathParser.parse(“PageOne.ChildOne”));
-     crawler.addPage(root, PathParser.parse(“PageTwo”));
- 
-     PageData data = pageOne.getData();
-     WikiPageProperties properties = data.getProperties();
-     WikiPageProperty symLinks = properties.set(SymbolicPage.PROPERTY_NAME);
-     symLinks.set(“SymPage”, ”PageTwo”);
-     pageOne.commit(data);
- 
-     request.setResource(“root”);
-     request.addInput(“type”, ”pages”);
-     Responder responder = new SerializedPageResponder();
-     SimpleResponse response =
-       (SimpleResponse) responder.makeResponse(
-          new FitNesseContext(root), request);
-     String xml = response.getContent();
- 
-     assertEquals(“text/xml”, response.getContentType());
-     assertSubString(“<name>PageOne</name>”, xml);
-     assertSubString(“<name>PageTwo</name>”, xml);
-     assertSubString(“<name>ChildOne</name>”, xml);
-     assertNotSubString(“SymPage”, xml);
-   }
- 
-   public void testGetDataAsHtml() throws Exception
-   {
-     crawler.addPage(root, PathParser.parse(“TestPageOne”), ”test page”);
- 
-     request.setResource(“TestPageOne”);
-     request.addInput(“type”, ”data”); 
-     Responder responder = new SerializedPageResponder();
-     SimpleResponse response =
-       (SimpleResponse) responder.makeResponse(
-          new FitNesseContext(root), request);
-     String xml = response.getContent();
- 
-     assertEquals(“text/xml”, response.getContentType());
-     assertSubString(“test page”, xml);
-     assertSubString(“<Test”, xml);
-   }
+  crawler.addPage(root, PathParser.parse(“PageOne”));
+  crawler.addPage(root, PathParser.parse(“PageOne.ChildOne”));
+  crawler.addPage(root, PathParser.parse(“PageTwo”));
+
+  request.setResource(“root”);
+  request.addInput(“type”, “pages”);
+  Responder responder = new SerializedPageResponder();
+  SimpleResponse response =
+    (SimpleResponse) responder.makeResponse(
+      new FitNesseContext(root), request);
+  String xml = response.getContent();
+
+  assertEquals(“text/xml”, response.getContentType());
+  assertSubString(“<name>PageOne</name>”, xml);
+  assertSubString(“<name>PageTwo</name>”, xml);
+  assertSubString(“<name>ChildOne</name>”, xml);
+}
+public void testGetPageHieratchyAsXmlDoesntContainSymbolicLinks()
+throws Exception {
+
+  WikiPage pageOne = crawler.addPage(root, PathParser.parse(“PageOne”));
+  crawler.addPage(root, PathParser.parse(“PageOne.ChildOne”));
+  crawler.addPage(root, PathParser.parse(“PageTwo”));
+
+  PageData data = pageOne.getData();
+  WikiPageProperties properties = data.getProperties();
+  WikiPageProperty symLinks = properties.set(SymbolicPage.PROPERTY_NAME);
+  symLinks.set(“SymPage”, ”PageTwo”);
+  pageOne.commit(data);
+
+  request.setResource(“root”);
+  request.addInput(“type”, ”pages”);
+  Responder responder = new SerializedPageResponder();
+  SimpleResponse response =
+    (SimpleResponse) responder.makeResponse(
+      new FitNesseContext(root), request);
+  String xml = response.getContent();
+
+  assertEquals(“text/xml”, response.getContentType());
+  assertSubString(“<name>PageOne</name>”, xml);
+  assertSubString(“<name>PageTwo</name>”, xml);
+  assertSubString(“<name>ChildOne</name>”, xml);
+  assertNotSubString(“SymPage”, xml);
+}
+
+public void testGetDataAsHtml() throws Exception
+{
+  crawler.addPage(root, PathParser.parse(“TestPageOne”), ”test page”);
+
+  request.setResource(“TestPageOne”);
+  request.addInput(“type”, ”data”); 
+  Responder responder = new SerializedPageResponder();
+  SimpleResponse response =
+    (SimpleResponse) responder.makeResponse(
+      new FitNesseContext(root), request);
+  String xml = response.getContent();
+
+  assertEquals(“text/xml”, response.getContentType());
+  assertSubString(“test page”, xml);
+  assertSubString(“<Test”, xml);
+}
 ```
 For example, look at the PathParser calls. They transform strings into PagePath instances used by the crawlers. This transformation is completely irrelevant to the test at hand and serves only to obfuscate the intent. The details surrounding the creation of the responder and the gathering and casting of the response are also just noise. Then there’s the ham-handed way that the request URL is built from a resource and an argument. (I helped write this code, so I feel free to roundly criticize it.)
 
@@ -147,41 +147,41 @@ Now consider the improved tests in Listing 9-2. These tests do the exact same th
 
 Listing 9-2 SerializedPageResponderTest.java (refactored)
 ```java
-   public void testGetPageHierarchyAsXml() throws Exception {
-     makePages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
- 
-     submitRequest(“root”, “type:pages”);
- 
-     assertResponseIsXML();
-     assertResponseContains(
-       “<name>PageOne</name>”, “<name>PageTwo</name>”, “<name>ChildOne</name>”
-     );
-   }
- 
-   public void testSymbolicLinksAreNotInXmlPageHierarchy() throws Exception {
-     WikiPage page = makePage(“PageOne”);
-     makePages(“PageOne.ChildOne”, “PageTwo”);
- 
-     addLinkTo(page, “PageTwo”, “SymPage”);
- 
-     submitRequest(“root”, “type:pages”);
- 
-     assertResponseIsXML();
-     assertResponseContains(
-       “<name>PageOne</name>”, “<name>PageTwo</name>”,
-              “<name>ChildOne</name>”
-     );
-     assertResponseDoesNotContain(“SymPage”);
-   } 
- 
-   public void testGetDataAsXml() throws Exception {
-     makePageWithContent(“TestPageOne”, “test page”);
- 
-     submitRequest(“TestPageOne”, “type:data”);
- 
-     assertResponseIsXML();
-     assertResponseContains(“test page”, “<Test”);
-   }
+public void testGetPageHierarchyAsXml() throws Exception {
+  makePages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
+
+  submitRequest(“root”, “type:pages”);
+
+  assertResponseIsXML();
+  assertResponseContains(
+    “<name>PageOne</name>”, “<name>PageTwo</name>”, “<name>ChildOne</name>”
+  );
+}
+
+public void testSymbolicLinksAreNotInXmlPageHierarchy() throws Exception {
+  WikiPage page = makePage(“PageOne”);
+  makePages(“PageOne.ChildOne”, “PageTwo”);
+
+  addLinkTo(page, “PageTwo”, “SymPage”);
+
+  submitRequest(“root”, “type:pages”);
+
+  assertResponseIsXML();
+  assertResponseContains(
+    “<name>PageOne</name>”, “<name>PageTwo</name>”,
+          “<name>ChildOne</name>”
+  );
+  assertResponseDoesNotContain(“SymPage”);
+} 
+
+public void testGetDataAsXml() throws Exception {
+  makePageWithContent(“TestPageOne”, “test page”);
+
+  submitRequest(“TestPageOne”, “type:data”);
+
+  assertResponseIsXML();
+  assertResponseContains(“test page”, “<Test”);
+}
 ```
 The BUILD-OPERATE-CHECK2 pattern is made obvious by the structure of these tests. Each of the tests is clearly split into three parts. The first part builds up the test data, the second part operates on that test data, and the third part checks that the operation yielded the expected results.
 
@@ -202,16 +202,16 @@ Consider the test in Listing 9-3. I wrote this test as part of an environment co
 
 Listing 9-3 EnvironmentControllerTest.java
 ```java
-   @Test
-     public void turnOnLoTempAlarmAtThreashold() throws Exception {
-       hw.setTemp(WAY_TOO_COLD);
-       controller.tic();
-       assertTrue(hw.heaterState());
-       assertTrue(hw.blowerState());
-       assertFalse(hw.coolerState());
-       assertFalse(hw.hiTempAlarm());
-       assertTrue(hw.loTempAlarm());
-     }
+@Test
+public void turnOnLoTempAlarmAtThreashold() throws Exception {
+  hw.setTemp(WAY_TOO_COLD);
+  controller.tic();
+  assertTrue(hw.heaterState());
+  assertTrue(hw.blowerState());
+  assertFalse(hw.coolerState());
+  assertFalse(hw.hiTempAlarm());
+  assertTrue(hw.loTempAlarm());
+}
 ```
 There are, of course, lots of details here. For example, what is that tic function all about? In fact, I’d rather you not worry about that while reading this test. I’d rather you just worry about whether you agree that the end state of the system is consistent with the temperature being “way too cold.”
 
@@ -222,11 +222,11 @@ I improved the reading of this test greatly by transforming it into Listing 9-4.
 
 Listing 9-4 EnvironmentControllerTest.java (refactored)
 ```java
-   @Test
-     public void turnOnLoTempAlarmAtThreshold() throws Exception {
-       wayTooCold();
-       assertEquals(“HBchL”, hw.getState());
-     }
+@Test
+public void turnOnLoTempAlarmAtThreshold() throws Exception {
+  wayTooCold();
+  assertEquals(“HBchL”, hw.getState());
+}
 ```
 Of course I hid the detail of the tic function by creating a wayTooCold function. But the thing to note is the strange string in the assertEquals. Upper case means “on,” lower case means “off,” and the letters are always in the following order: {heater, blower, cooler, hi-temp-alarm, lo-temp-alarm}.
 
@@ -237,43 +237,43 @@ Even though this is close to a violation of the rule about mental mapping,3 it s
 
 Listing 9-5 EnvironmentControllerTest.java (bigger selection)
 ```java
-   @Test
-   public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
-     tooHot();
-     assertEquals(“hBChl”, hw.getState());
-   }
- 
-   @Test
-   public void turnOnHeaterAndBlowerIfTooCold() throws Exception {
-     tooCold();
-     assertEquals(“HBchl”, hw.getState());
-   }
- 
-   @Test
-   public void turnOnHiTempAlarmAtThreshold() throws Exception {
-     wayTooHot();
-     assertEquals(“hBCHl”, hw.getState());
-   }
-   @Test
-   public void turnOnLoTempAlarmAtThreshold() throws Exception {
-     wayTooCold();
-     assertEquals(“HBchL”, hw.getState());
-   }
+@Test
+public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
+  tooHot();
+  assertEquals(“hBChl”, hw.getState());
+}
+
+@Test
+public void turnOnHeaterAndBlowerIfTooCold() throws Exception {
+  tooCold();
+  assertEquals(“HBchl”, hw.getState());
+}
+
+@Test
+public void turnOnHiTempAlarmAtThreshold() throws Exception {
+  wayTooHot();
+  assertEquals(“hBCHl”, hw.getState());
+}
+@Test
+public void turnOnLoTempAlarmAtThreshold() throws Exception {
+  wayTooCold();
+  assertEquals(“HBchL”, hw.getState());
+}
 ```
 The getState function is shown in Listing 9-6. Notice that this is not very efficient code. To make it efficient, I probably should have used a StringBuffer.
 
 
 Listing 9-6 MockControlHardware.java
 ```java
-   public String getState() {
-     String state = ””;
-     state += heater ? “H” : “h”;
-     state += blower ? “B” : “b”;
-     state += cooler ? “C” : “c”;
-     state += hiTempAlarm ? “H” : “h”;
-     state += loTempAlarm ? “L” : “l”;
-     return state;
-   }
+public String getState() {
+  String state = ””;
+  state += heater ? “H” : “h”;
+  state += blower ? “B” : “b”;
+  state += cooler ? “C” : “c”;
+  state += hiTempAlarm ? “H” : “h”;
+  state += loTempAlarm ? “L” : “l”;
+  return state;
+}
 ```
 StringBuffers are a bit ugly. Even in production code I will avoid them if the cost is small; and you could argue that the cost of the code in Listing 9-6 is very small. However, this application is clearly an embedded real-time system, and it is likely that computer and memory resources are very constrained. The test environment, however, is not likely to be constrained at all.
 
@@ -289,22 +289,22 @@ But what about Listing 9-2? It seems unreasonable that we could somehow easily m
 
 Listing 9-7 SerializedPageResponderTest.java (Single Assert)
 ```java
-   public void testGetPageHierarchyAsXml() throws Exception {
-       givenPages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
- 
-       whenRequestIsIssued(“root”, “type:pages”);
- 
-       thenResponseShouldBeXML();
-   }
-   public void testGetPageHierarchyHasRightTags() throws Exception {
-       givenPages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
- 
-       whenRequestIsIssued(“root”, “type:pages”);
- 
-       thenResponseShouldContain(
-         “<name>PageOne</name>”, “<name>PageTwo</name>”, “<name>ChildOne</name>”
-       );
-   }
+public void testGetPageHierarchyAsXml() throws Exception {
+    givenPages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
+
+    whenRequestIsIssued(“root”, “type:pages”);
+
+    thenResponseShouldBeXML();
+}
+public void testGetPageHierarchyHasRightTags() throws Exception {
+    givenPages(“PageOne”, “PageOne.ChildOne”, “PageTwo”);
+
+    whenRequestIsIssued(“root”, “type:pages”);
+
+    thenResponseShouldContain(
+      “<name>PageOne</name>”, “<name>PageTwo</name>”, “<name>ChildOne</name>”
+    );
+}
 ```
 Notice that I have changed the names of the functions to use the common given-when-then5 convention. This makes the tests even easier to read. Unfortunately, splitting the tests as shown results in a lot of duplicate code.
 
@@ -324,28 +324,28 @@ Perhaps a better rule is that we want to test a single concept in each test func
 
 Listing 9-8
 ```java
-   /**
-   * Miscellaneous tests for the addMonths() method.
-   */
-   public void testAddMonths() {
-       SerialDate d1 = SerialDate.createInstance(31, 5, 2004);
- 
-       SerialDate d2 = SerialDate.addMonths(1, d1);
-       assertEquals(30, d2.getDayOfMonth());
-       assertEquals(6, d2.getMonth());
-       assertEquals(2004, d2.getYYYY());
- 
-       SerialDate d3 = SerialDate.addMonths(2, d1);
-       assertEquals(31, d3.getDayOfMonth());
-       assertEquals(7, d3.getMonth());
-       assertEquals(2004, d3.getYYYY());
- 
-       SerialDate d4 = SerialDate.addMonths(1, SerialDate.addMonths(1, d1));
-       assertEquals(30, d4.getDayOfMonth());
-       assertEquals(7, d4.getMonth());
-       assertEquals(2004, d4.getYYYY());
- 
-   }
+/**
+* Miscellaneous tests for the addMonths() method.
+*/
+public void testAddMonths() {
+    SerialDate d1 = SerialDate.createInstance(31, 5, 2004);
+
+    SerialDate d2 = SerialDate.addMonths(1, d1);
+    assertEquals(30, d2.getDayOfMonth());
+    assertEquals(6, d2.getMonth());
+    assertEquals(2004, d2.getYYYY());
+
+    SerialDate d3 = SerialDate.addMonths(2, d1);
+    assertEquals(31, d3.getDayOfMonth());
+    assertEquals(7, d3.getMonth());
+    assertEquals(2004, d3.getYYYY());
+
+    SerialDate d4 = SerialDate.addMonths(1, SerialDate.addMonths(1, d1));
+    assertEquals(30, d4.getDayOfMonth());
+    assertEquals(7, d4.getMonth());
+    assertEquals(2004, d4.getYYYY());
+
+}
 ```
 The three test functions probably ought to be like this:
 
